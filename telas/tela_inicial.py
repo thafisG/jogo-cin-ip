@@ -20,7 +20,7 @@ pygame.display.set_caption("Menu - A Guerra dos Tronos")
 # Carregar imagens de fundo
 fundo_menu = pygame.image.load("Downloads/tela_menu_figma.png").convert()
 fundo_menu = pygame.transform.scale(fundo_menu, (LARGURA_TELA, ALTURA_TELA))
-fundo_menu_in = pygame.image.load("Downloads/escolha_de_personagens.png").convert()
+fundo_menu_in = pygame.image.load("Downloads/escolhas_de_personagens.png").convert()
 fundo_menu_in = pygame.transform.scale(fundo_menu_in, (LARGURA_TELA, ALTURA_TELA))
 
 # Fonte
