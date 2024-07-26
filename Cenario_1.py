@@ -230,8 +230,8 @@ def show_game_over(screen):
 player = Player()
 
 # Criar os dois inimigos (dragões) para a fase atual
-dragon1 = Enemy('D:/drag.png', WIDTH - 100, HEIGHT // 2)  # Exemplo de posição e imagem do primeiro dragão
-dragon2 = Enemy('D:/drag2.png', WIDTH - 100, random.randint(50, HEIGHT - 50))  # Exemplo de posição e imagem do segundo dragão
+dragon1 = Enemy('D:/dragao.png', WIDTH - 100, HEIGHT // 2)  # Exemplo de posição e imagem do primeiro dragão
+dragon2 = Enemy('D:/dragao2.png', WIDTH - 100, random.randint(50, HEIGHT - 50))  # Exemplo de posição e imagem do segundo dragão
 
 # Lista dos dragões disponíveis na fase atual
 dragons = pygame.sprite.Group()
