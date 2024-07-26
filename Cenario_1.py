@@ -29,7 +29,7 @@ class Player(pygame.sprite.Sprite):
 
         # Carregar imagens para a animação de ataque com fundo alfa
         self.attack_images = [
-            pygame.image.load('D:/ataque1.png').convert_alpha(),
+            pygame.image.load('D:/snow.png').convert_alpha(),
             pygame.image.load('D:/ataque2.png').convert_alpha()
             # Adicione mais imagens conforme necessário para sua animação de ataque
         ]
@@ -154,9 +154,25 @@ class Enemy(pygame.sprite.Sprite):
         self.max_health = 50
         self.health = self.max_health
 
+        # Controle de ataque do inimigo
+        self.attack_cooldown = 100  # Tempo entre ataques em frames
+        self.attack_timer = 0
+
     def update(self):
         # Movimento simples do inimigo
         self.rect.x -= self.speed
+
+        # Atualiza o tempo do cooldown do ataque
+        self.attack_timer += 1
+        if self.attack_timer >= self.attack_cooldown:
+            self.attack()
+            self.attack_timer = 0
+
+    def attack(self):
+        # Cria uma nova bola de fogo (ataque)
+        fireball = FireballAttack(self.rect.centerx - 20, self.rect.centery)  # Ajuste a posição inicial do ataque
+        fireballs.add(fireball)
+        all_sprites.add(fireball)
 
     def draw(self, screen):
         # Desenhar o inimigo na tela
@@ -190,7 +206,7 @@ class Collectible(pygame.sprite.Sprite):
         # Carregar imagem do item colecionável
         if item_type == "Fire Ball":
             try:
-                self.image = pygame.image.load('D:/fire_ball.webp').convert_alpha()  # Ajuste o caminho conforme necessário
+                self.image = pygame.image.load('D:/colecio.png').convert_alpha()  # Ajuste o caminho conforme necessário
                 # Redimensionar a imagem para um tamanho menor
                 self.image = pygame.transform.scale(self.image, (30, 30))  # Ajuste o tamanho conforme necessário
             except pygame.error as e:
@@ -211,6 +227,34 @@ class Collectible(pygame.sprite.Sprite):
 
     def draw(self, screen):
         # Desenhar o item colecionável na tela
+        screen.blit(self.image, self.rect)
+
+# Classe para o ataque de bola de fogo
+class FireballAttack(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        # Carregar imagem da bola de fogo
+        try:
+            self.image = pygame.image.load('D:/ball_fire_attack.png').convert_alpha()  # Ajuste o caminho conforme necessário
+            self.image = pygame.transform.scale(self.image, (30, 30))  # Ajuste o tamanho conforme necessário
+        except pygame.error as e:
+            print(f"Erro ao carregar a imagem 'fireball.png': {e}")
+            self.image = pygame.Surface((30, 30))  # Substitui a imagem com um retângulo simples
+            self.image.fill(RED)  # Preenche com vermelho para indicar um erro visualmente
+
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.speed = 10  # Velocidade do ataque
+
+    def update(self):
+        # Movimento do ataque
+        self.rect.x -= self.speed
+        # Remove o ataque se sair da tela
+        if self.rect.right < 0:
+            self.kill()
+
+    def draw(self, screen):
+        # Desenhar o ataque na tela
         screen.blit(self.image, self.rect)
 
 # Função para criar um novo item colecionável na tela
@@ -245,6 +289,9 @@ all_sprites.add(dragons)
 # Group para os itens colecionáveis
 collectibles = pygame.sprite.Group()
 
+# Group para os ataques de bola de fogo
+fireballs = pygame.sprite.Group()
+
 # Loop principal do jogo
 running = True
 while running:
@@ -269,6 +316,12 @@ while running:
             if pygame.sprite.collide_rect(player, dragon):
                 player.health -= 1
                 dragon.take_damage()
+
+    # Verificar colisões entre o jogador e os ataques de bola de fogo
+    for fireball in fireballs:
+        if pygame.sprite.collide_rect(player, fireball):
+            player.health -= 5  # Ajuste o dano conforme necessário
+            fireball.kill()  # Remove a bola de fogo após o impacto
 
     # Verificar fim de jogo
     if player.health <= 0:
