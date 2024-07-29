@@ -11,7 +11,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Jogo do Ano")
 
 # Carregar imagem de fundo
-background_image = pygame.image.load('D:/cenario.jpg').convert()  # Ajuste o caminho conforme necessário
+background_image = pygame.image.load('D:/cenario.jpg').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
 
 # Definir cores
@@ -20,49 +20,30 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 
-# Variável de controle de fase
-current_phase = 1
-
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-
-        # Carregar imagens para a animação de ataque com fundo alfa
         self.attack_images = [
             pygame.image.load('D:/draca.png').convert_alpha(),
             pygame.image.load('D:/draca.png').convert_alpha()
-            # Adicione mais imagens conforme necessário para sua animação de ataque
         ]
-
         self.image = self.attack_images[0]
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH // 4, HEIGHT // 2)
-
-        # Velocidade do jogador
-        self.speed = 7  # Ajuste a velocidade conforme necessário
-
-        # Atributos de vida
+        self.speed = 2
         self.max_health = 100
         self.health = self.max_health
-
-        # Controle da animação de ataque
         self.is_attacking = False
-        self.attack_index = 0  # Índice atual da animação de ataque
-        self.attack_animation_speed = 10  # Velocidade da animação de ataque (quanto maior, mais lento)
-
-        # Controle do tempo para a animação de ataque
+        self.attack_index = 0
+        self.attack_animation_speed = 10
         self.attack_frame_count = 1
-
-        # Inventário para os itens colecionáveis
-        self.inventory = {
-            "Fire Ball": 0
-        }
+        self.inventory = {"Fire Ball": 0, "Ovo": 0}  # Adicionando "Ovo" ao inventário
+        self.fireball_cooldown = 500  # Cooldown inicial em milissegundos
+        self.fireball_timer = 0  # Temporizador para controle de cooldown
+        self.double_shoot = False  # Flag para controle do disparo duplo
 
     def update(self):
-        # Atualizar a posição do jogador com base nas teclas pressionadas
         keys = pygame.key.get_pressed()
-
-        # Movimento do jogador
         if keys[pygame.K_LEFT]:
             self.rect.x -= self.speed
         if keys[pygame.K_RIGHT]:
@@ -71,64 +52,66 @@ class Player(pygame.sprite.Sprite):
             self.rect.y -= self.speed
         if keys[pygame.K_DOWN]:
             self.rect.y += self.speed
-
-        # Limitar o jogador dentro dos limites da tela
         self.rect.x = max(0, min(WIDTH - self.rect.width, self.rect.x))
         self.rect.y = max(0, min(HEIGHT - self.rect.height, self.rect.y))
 
-        # Verificar se o jogador está atacando
+        # Disparar projéteis somente quando a tecla 'K' é pressionada
+        if keys[pygame.K_k]:
+            self.shoot()
+        
         if keys[pygame.K_a]:
             self.attack()
 
     def attack(self):
-        # Controla a velocidade da animação de ataque
         self.is_attacking = True
         self.attack_frame_count += 1
         if self.attack_frame_count >= self.attack_animation_speed:
             self.attack_frame_count = 0
-            # Avança para o próximo frame da animação
             self.attack_index += 1
             if self.attack_index >= len(self.attack_images):
-                self.attack_index = 0  # Reinicia a animação
-
-            # Define a imagem atual da animação de ataque
+                self.attack_index = 0
             self.image = self.attack_images[self.attack_index]
-
-            # Verifica colisão com o dragão durante o ataque
-            if pygame.sprite.spritecollide(self, dragons, False):
-                for dragon in dragons.copy():  # Usamos copy() para iterar sobre uma cópia, pois vamos modificar o original
-                    if pygame.sprite.collide_rect(self, dragon):
-                        dragon.take_damage()
-                        # Após derrotar o dragão, criar um item colecionável
-                        create_collectible(dragon.rect.centerx, dragon.rect.bottom, "Fire Ball")
-                        dragons.remove(dragon)  # Remove o dragão derrotado do grupo
-                        all_sprites.remove(dragon)  # Remove também do grupo de todos os sprites
-
+            # Verificar se há colisão com dragões
+            dragons_hit = pygame.sprite.spritecollide(self, dragons, False)
+            for dragon in dragons_hit:
+                dragon.take_damage()
+                # Criar item "Fire Ball" quando o dragão é atacado
+                create_collectible(dragon.rect.centerx, dragon.rect.bottom, "Fire Ball")
         else:
             self.is_attacking = False
 
+    def shoot(self):
+        current_time = pygame.time.get_ticks()
+        if current_time - self.fireball_timer >= self.fireball_cooldown:
+            if self.double_shoot:
+                # Disparar dois projéteis
+                fireball1 = FireballAttack(self.rect.right, self.rect.centery - 15, "player")
+                fireball2 = FireballAttack(self.rect.right, self.rect.centery + 15, "player")
+                fireballs.add(fireball1)
+                fireballs.add(fireball2)
+                all_sprites.add(fireball1)
+                all_sprites.add(fireball2)
+            else:
+                # Disparar um projétil
+                fireball = FireballAttack(self.rect.right, self.rect.centery, "player")
+                fireballs.add(fireball)
+                all_sprites.add(fireball)
+            self.fireball_timer = current_time  # Atualiza o temporizador para o último disparo
+
     def draw(self, screen):
-        # Desenhar o jogador na tela
         screen.blit(self.image, self.rect)
 
     def draw_health_bar(self, screen):
-        # Desenhar barra de vida do jogador
         bar_width = 100
         bar_height = 10
         bar_x = self.rect.centerx - bar_width // 2
         bar_y = self.rect.top - 20
-
-        # Calcula a largura proporcional da barra de vida baseada na vida atual
         health_ratio = self.health / self.max_health
         health_bar_width = int(bar_width * health_ratio)
-
-        # Desenha a barra de fundo (vermelha)
         pygame.draw.rect(screen, RED, (bar_x, bar_y, bar_width, bar_height))
-        # Desenha a barra de vida (verde) por cima da barra de fundo
         pygame.draw.rect(screen, GREEN, (bar_x, bar_y, health_bar_width, bar_height))
 
     def draw_inventory(self, screen):
-        # Desenhar o inventário na tela
         font = pygame.font.Font(None, 24)
         text = font.render("Inventário:", True, WHITE)
         screen.blit(text, (10, 10))
@@ -138,220 +121,213 @@ class Player(pygame.sprite.Sprite):
             screen.blit(item_text, (10, inventory_y))
             inventory_y += 20
 
+    def increase_fireball_speed(self):
+        # Reduz o tempo de cooldown
+        self.fireball_cooldown = max(100, self.fireball_cooldown - 100)  # O cooldown não pode ser menor que 100 ms
+
+    def enable_double_shoot(self):
+        # Ativa o disparo duplo
+        self.double_shoot = True
+
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, image_path, x, y):
         super().__init__()
-
-        # Carregar imagem do inimigo (dragão)
         self.image = pygame.image.load(image_path).convert_alpha()
+        self.image = pygame.transform.scale(self.image, (150, 150))  # Redimensionar para tamanho médio
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
-
-        # Velocidade do inimigo
-        self.speed = 1  # Velocidade de movimento do inimigo
-
-        # Atributos de vida do inimigo
+        self.speed = 1
         self.max_health = 50
         self.health = self.max_health
-
-        # Controle de ataque do inimigo
-        self.attack_cooldown = 100  # Tempo entre ataques em frames
+        self.attack_cooldown = 100
         self.attack_timer = 0
+        self.reappearance_delay = 10000  # Tempo de reaparecimento em milissegundos
+        self.reappearance_timer = 0
+        self.is_reappearing = False
 
     def update(self):
-        # Movimento simples do inimigo
-        self.rect.x -= self.speed
+        # Recolocar o dragão se sair da tela
+        if self.rect.right < 0:
+            self.rect.left = WIDTH
+        elif self.rect.left > WIDTH:
+            self.rect.right = 0
+        elif self.rect.bottom < 0:
+            self.rect.top = HEIGHT
+        elif self.rect.top > HEIGHT:
+            self.rect.bottom = 0
 
-        # Atualiza o tempo do cooldown do ataque
+        # Mover e atacar
+        self.rect.x -= self.speed
         self.attack_timer += 1
         if self.attack_timer >= self.attack_cooldown:
             self.attack()
             self.attack_timer = 0
 
     def attack(self):
-        # Cria uma nova bola de fogo (ataque)
-        fireball = FireballAttack(self.rect.centerx - 20, self.rect.centery)  # Ajuste a posição inicial do ataque
+        fireball = FireballAttack(self.rect.centerx - 20, self.rect.centery, "enemy")
         fireballs.add(fireball)
         all_sprites.add(fireball)
 
     def draw(self, screen):
-        # Desenhar o inimigo na tela
         screen.blit(self.image, self.rect)
 
     def draw_health_bar(self, screen):
-        # Desenhar barra de vida do inimigo
         bar_width = 100
         bar_height = 10
         bar_x = self.rect.centerx - bar_width // 2
         bar_y = self.rect.top - 20
-
-        # Calcula a largura proporcional da barra de vida baseada na vida atual
         health_ratio = self.health / self.max_health
         health_bar_width = int(bar_width * health_ratio)
-
-        # Desenha a barra de fundo (vermelha)
         pygame.draw.rect(screen, RED, (bar_x, bar_y, bar_width, bar_height))
-        # Desenha a barra de vida (verde) por cima da barra de fundo
         pygame.draw.rect(screen, GREEN, (bar_x, bar_y, health_bar_width, bar_height))
 
     def take_damage(self):
-        # Função para reduzir a vida do dragão quando ele é atacado pelo jogador
-        self.health -= 10  # Ajuste conforme necessário
+        self.health -= 10
+        if self.health <= 0:
+            self.kill()
+            # Criar item "Fire Ball" quando o dragão é derrotado
+            create_collectible(self.rect.centerx, self.rect.bottom, "Fire Ball")
+            # Não removemos o dragão do grupo; ele só irá reaparecer na tela
+            self.health = self.max_health
+            self.rect.center = (WIDTH - 100, random.randint(50, HEIGHT - 50))
 
-# Classe para os itens colecionáveis
 class Collectible(pygame.sprite.Sprite):
     def __init__(self, x, y, item_type):
         super().__init__()
-
-        # Carregar imagem do item colecionável
         if item_type == "Fire Ball":
             try:
-                self.image = pygame.image.load('D:/colecio.png').convert_alpha()  # Ajuste o caminho conforme necessário
-                # Redimensionar a imagem para um tamanho menor
-                self.image = pygame.transform.scale(self.image, (30, 30))  # Ajuste o tamanho conforme necessário
+                self.image = pygame.image.load('D:/colecio.png').convert_alpha()
+                self.image = pygame.transform.scale(self.image, (30, 30))
             except pygame.error as e:
-                print(f"Erro ao carregar a imagem 'fire_ball.webp': {e}")
-                self.image = pygame.Surface((30, 30))  # Substitui a imagem com um retângulo simples
-                self.image.fill(RED)  # Preenche com vermelho para indicar um erro visualmente
-
+                print(f"Erro ao carregar a imagem 'colecio.png': {e}")
+                self.image = pygame.Surface((30, 30))
+                self.image.fill(RED)
+        elif item_type == "Ovo":
+            try:
+                self.image = pygame.image.load('D:/ovo.png').convert_alpha()
+                self.image = pygame.transform.scale(self.image, (30, 30))
+            except pygame.error as e:
+                print(f"Erro ao carregar a imagem 'ovo.png': {e}")
+                self.image = pygame.Surface((30, 30))
+                self.image.fill(BLUE)
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
-        self.time_to_live = 5000  # Tempo em milissegundos que o item permanecerá visível
+        self.time_to_live = 5000
         self.creation_time = pygame.time.get_ticks()
 
     def update(self):
-        # Atualiza o tempo de vida do item
         current_time = pygame.time.get_ticks()
         if current_time - self.creation_time > self.time_to_live:
-            self.kill()  # Remove o item da tela após o tempo de vida
-
-    def draw(self, screen):
-        # Desenhar o item colecionável na tela
-        screen.blit(self.image, self.rect)
-
-# Classe para o ataque de bola de fogo
-class FireballAttack(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        super().__init__()
-        # Carregar imagem da bola de fogo
-        try:
-            self.image = pygame.image.load('D:/ball_fire_attack.png').convert_alpha()  # Ajuste o caminho conforme necessário
-            self.image = pygame.transform.scale(self.image, (30, 30))  # Ajuste o tamanho conforme necessário
-        except pygame.error as e:
-            print(f"Erro ao carregar a imagem 'fireball.png': {e}")
-            self.image = pygame.Surface((30, 30))  # Substitui a imagem com um retângulo simples
-            self.image.fill(RED)  # Preenche com vermelho para indicar um erro visualmente
-
-        self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
-        self.speed = 10  # Velocidade do ataque
-
-    def update(self):
-        # Movimento do ataque
-        self.rect.x -= self.speed
-        # Remove o ataque se sair da tela
-        if self.rect.right < 0:
             self.kill()
 
     def draw(self, screen):
-        # Desenhar o ataque na tela
         screen.blit(self.image, self.rect)
 
-# Função para criar um novo item colecionável na tela
+class FireballAttack(pygame.sprite.Sprite):
+    def __init__(self, x, y, source):
+        super().__init__()
+        self.source = source
+        try:
+            self.image = pygame.image.load('D:/ball_fire_attack.png').convert_alpha()
+            self.image = pygame.transform.scale(self.image, (30, 30))
+        except pygame.error as e:
+            print(f"Erro ao carregar a imagem 'fireball.png': {e}")
+            self.image = pygame.Surface((30, 30))
+            self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.speed = 5  # Reduzido a velocidade dos projéteis
+
+    def update(self):
+        if self.source == "player":
+            self.rect.x += self.speed
+        else:
+            self.rect.x -= self.speed
+        if self.rect.right < 0 or self.rect.left > WIDTH:
+            self.kill()
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
+
 def create_collectible(x, y, item_type):
     collectible = Collectible(x, y, item_type)
     collectibles.add(collectible)
     all_sprites.add(collectible)
 
-# Função para mostrar "Fim de Jogo"
 def show_game_over(screen):
     font = pygame.font.Font(None, 36)
     text = font.render("Fim de Jogo", True, WHITE)
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     screen.blit(text, text_rect)
 
-# Criar jogador
 player = Player()
 
-# Criar os dois inimigos (dragões) para a fase atual
-dragon1 = Enemy('D:/dragao.png', WIDTH - 100, HEIGHT // 2)  # Exemplo de posição e imagem do primeiro dragão
-dragon2 = Enemy('D:/dragao2.png', WIDTH - 100, random.randint(50, HEIGHT - 50))  # Exemplo de posição e imagem do segundo dragão
+dragon1 = Enemy('D:/dragao.png', WIDTH - 100, HEIGHT // 2)
+dragon2 = Enemy('D:/dragao2.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
 
-# Lista dos dragões disponíveis na fase atual
 dragons = pygame.sprite.Group()
 dragons.add(dragon1, dragon2)
 
-# Group para os sprites (jogador, inimigos e itens colecionáveis)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
-all_sprites.add(dragons)
+all_sprites.add(dragon1)
+all_sprites.add(dragon2)
 
-# Group para os itens colecionáveis
 collectibles = pygame.sprite.Group()
-
-# Group para os ataques de bola de fogo
 fireballs = pygame.sprite.Group()
 
-# Loop principal do jogo
+# Criar item "Ovo" no início do jogo
+create_collectible(WIDTH // 2, HEIGHT // 2, "Ovo")
+
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    # Atualizar sprites
     all_sprites.update()
 
-    # Verificar colisões entre o jogador e os itens colecionáveis
     collected_items = pygame.sprite.spritecollide(player, collectibles, True)
     for item in collected_items:
         if isinstance(item, Collectible):
-            if item.image.get_at((0, 0)) == RED:  # Verifica se a cor é a do item de erro (alternativa)
-                continue
-            player.inventory["Fire Ball"] += 1
+            if item.image.get_at((0, 0)) != RED:  # Corrigido para permitir coleta se a cor não for RED
+                if item.image.get_at((0, 0)) == BLUE:
+                    player.increase_fireball_speed()  # Aumenta a velocidade do disparo
+                else:
+                    player.inventory["Fire Ball"] += 1
+                    if player.inventory["Ovo"] == 0:
+                        player.enable_double_shoot()  # Habilita o disparo duplo após pegar o item "Ovo"
+                        player.inventory["Ovo"] += 1  # Atualiza o inventário para refletir a coleta do item
 
-    # Verificar colisões entre o jogador e os dragões
-    if pygame.sprite.spritecollide(player, dragons, False):
-        for dragon in dragons:
-            if pygame.sprite.collide_rect(player, dragon):
-                player.health -= 1
+    # Verificar colisões entre projéteis e inimigos
+    for fireball in fireballs.copy():
+        if fireball.source == "player":
+            dragons_hit = pygame.sprite.spritecollide(fireball, dragons, False)
+            for dragon in dragons_hit:
                 dragon.take_damage()
+                fireball.kill()
+        elif fireball.source == "enemy":
+            if pygame.sprite.collide_rect(player, fireball):
+                player.health -= 5
+                fireball.kill()
 
-    # Verificar colisões entre o jogador e os ataques de bola de fogo
-    for fireball in fireballs:
-        if pygame.sprite.collide_rect(player, fireball):
-            player.health -= 5  # Ajuste o dano conforme necessário
-            fireball.kill()  # Remove a bola de fogo após o impacto
-
-    # Verificar fim de jogo
+    # Verificar se o jogador morreu
     if player.health <= 0:
         show_game_over(screen)
         pygame.display.flip()
-        pygame.time.delay(2000)  # Espera 2 segundos
-        break
+        pygame.time.delay(2000)
+        running = False
 
-    # Verificar se todos os dragões foram derrotados
-    for dragon in dragons.copy():  # Usamos copy() para iterar sobre uma cópia, pois vamos modificar o original
-        if dragon.health <= 0:
-            dragons.remove(dragon)  # Remove o dragão derrotado do grupo
-            all_sprites.remove(dragon)  # Remove também do grupo de todos os sprites
-            create_collectible(dragon.rect.centerx, dragon.rect.bottom, "Fire Ball")  # Criar um item colecionável na posição do dragão
-
-    # Desenhar elementos na tela
-    screen.blit(background_image, (0, 0))  # Desenha o cenário de fundo na tela
-    all_sprites.draw(screen)  # Desenha todos os sprites
-    player.draw_health_bar(screen)  # Desenha a barra de vida do jogador
-    player.draw_inventory(screen)  # Desenha o inventário do jogador
-
+    # Atualizar e desenhar
+    screen.blit(background_image, (0, 0))
+    all_sprites.draw(screen)
+    player.draw_health_bar(screen)
+    player.draw_inventory(screen)
     for dragon in dragons:
-        dragon.draw_health_bar(screen)  # Desenha a barra de vida dos dragões
+        dragon.draw_health_bar(screen)
 
-    # Atualizar tela
     pygame.display.flip()
-
-    # Controlar a taxa de atualização da tela
     pygame.time.Clock().tick(60)
 
-# Finalizar o Pygame
 pygame.quit()
 sys.exit()
