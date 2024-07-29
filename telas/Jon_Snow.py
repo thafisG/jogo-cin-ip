@@ -11,7 +11,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Jogo do Ano")
 
 # Carregar imagem de fundo
-background_image = pygame.image.load('D:/cenario.jpg').convert()  # Ajuste o caminho conforme necessário
+background_image = pygame.image.load('D:/cenario.jpg').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
 
 # Definir cores
@@ -30,8 +30,8 @@ class Weapon(pygame.sprite.Sprite):
         self.weapon_type = weapon_type
         self.damage = damage
         if weapon_type == "Sword":
-            self.image = pygame.image.load('D:/sword.png').convert_alpha()  # Carregar a imagem da espada
-            self.image = pygame.transform.scale(self.image, (30, 30))  # Ajustar o tamanho se necessário
+            self.image = pygame.image.load('D:/true_sword.png').convert_alpha()
+            self.image = pygame.transform.scale(self.image, (60, 60))  # Tamanho da espada
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
 
@@ -41,12 +41,12 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.attack_images = [
             pygame.image.load('D:/snow.png').convert_alpha(),
-            pygame.image.load('D:/ataque2.png').convert_alpha()
+            pygame.image.load('D:/snow.png').convert_alpha()
         ]
         self.image = self.attack_images[0]
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH // 4, HEIGHT // 2)
-        self.speed = 5
+        self.speed = 1
         self.max_health = 100
         self.health = self.max_health
         self.is_attacking = False
@@ -58,7 +58,7 @@ class Player(pygame.sprite.Sprite):
             "Sword": 0
         }
         self.current_weapon = None
-        self.default_damage = 5  # Define um dano padrão
+        self.default_damage = 5
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -97,7 +97,7 @@ class Player(pygame.sprite.Sprite):
             dragons_to_remove = []
             for dragon in dragons:
                 if pygame.sprite.collide_rect(self, dragon):
-                    damage = self.current_weapon.damage if self.current_weapon else self.default_damage  # Usa o dano da arma se estiver disponível
+                    damage = self.current_weapon.damage if self.current_weapon else self.default_damage
                     dragon.take_damage(damage)
                     create_collectible(dragon.rect.centerx, dragon.rect.bottom, "Fire Ball")
                     dragons_to_remove.append(dragon)
@@ -136,6 +136,7 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, image_path, x, y):
         super().__init__()
         self.image = pygame.image.load(image_path).convert_alpha()
+        self.image = pygame.transform.scale(self.image, (100, 100))  # Tamanho médio do dragão
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.speed = 1
@@ -146,6 +147,8 @@ class Enemy(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.x -= self.speed
+        if self.rect.right < 0:  # Quando o dragão sair pelo lado esquerdo da tela
+            self.rect.left = WIDTH  # Reposiciona o dragão na borda direita
         self.attack_timer += 1
         if self.attack_timer >= self.attack_cooldown:
             self.attack()
@@ -292,7 +295,7 @@ while running:
     for dragon in dragons:
         if pygame.sprite.collide_rect(player, dragon):
             player.health -= 1
-            damage = player.current_weapon.damage if player.current_weapon else player.default_damage  # Usa o dano da arma se estiver disponível
+            damage = player.current_weapon.damage if player.current_weapon else player.default_damage
             dragon.take_damage(damage)
             if dragon.health <= 0:
                 create_collectible(dragon.rect.centerx, dragon.rect.bottom, "Fire Ball")
@@ -313,7 +316,7 @@ while running:
         show_game_over(screen)
         pygame.display.flip()
         pygame.time.delay(2000)
-        break
+        
 
     # Desenhar elementos na tela
     screen.blit(background_image, (0, 0))
