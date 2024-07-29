@@ -74,7 +74,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = max(0, min(WIDTH - self.rect.width, self.rect.x))
         self.rect.y = max(0, min(HEIGHT - self.rect.height, self.rect.y))
 
-        if keys[pygame.K_a]:
+        if keys[pygame.K_k]:
             self.attack()
 
         # Verificar se o jogador coleta armas
@@ -99,8 +99,9 @@ class Player(pygame.sprite.Sprite):
                 if pygame.sprite.collide_rect(self, dragon):
                     damage = self.current_weapon.damage if self.current_weapon else self.default_damage
                     dragon.take_damage(damage)
-                    create_collectible(dragon.rect.centerx, dragon.rect.bottom, "Fire Ball")
-                    dragons_to_remove.append(dragon)
+                    if dragon.health <= 0:
+                        create_collectible(dragon.rect.centerx, dragon.rect.bottom, "Fire Ball")
+                        dragons_to_remove.append(dragon)
             
             for dragon in dragons_to_remove:
                 dragons.remove(dragon)
@@ -289,21 +290,6 @@ while running:
             if item.image.get_at((0, 0)) == RED:
                 continue
             player.inventory["Fire Ball"] += 1
-
-    # Verificar colisões entre o jogador e os dragões
-    dragons_to_remove = []
-    for dragon in dragons:
-        if pygame.sprite.collide_rect(player, dragon):
-            player.health -= 1
-            damage = player.current_weapon.damage if player.current_weapon else player.default_damage
-            dragon.take_damage(damage)
-            if dragon.health <= 0:
-                create_collectible(dragon.rect.centerx, dragon.rect.bottom, "Fire Ball")
-                dragons_to_remove.append(dragon)
-    
-    for dragon in dragons_to_remove:
-        dragons.remove(dragon)
-        all_sprites.remove(dragon)
 
     # Verificar colisões entre o jogador e os ataques de bola de fogo
     for fireball in fireballs:
