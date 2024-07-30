@@ -11,7 +11,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Jogo do Anão")
 
 # Carregar imagem de fundo
-background_image = pygame.image.load('D:/cenario.jpg').convert()
+background_image = pygame.image.load('D:/mapa.jpg').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
 
 # Definir cores
@@ -37,8 +37,8 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.attack_images = [
-            pygame.image.load('D:/anao.png').convert_alpha(),
-            pygame.image.load('D:/anao.png').convert_alpha()
+            pygame.image.load('D:/Stannis baratheon.png').convert_alpha(),
+            pygame.image.load('D:/Stannis baratheon.png').convert_alpha()
         ]
         self.image = self.attack_images[0]
         self.rect = self.image.get_rect()
