@@ -11,7 +11,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Jogo do Ano")
 
 # Carregar imagem de fundo
-background_image = pygame.image.load('D:/cenario.jpg').convert()
+background_image = pygame.image.load('D:/mapa.jpg').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
 
 # Definir cores
