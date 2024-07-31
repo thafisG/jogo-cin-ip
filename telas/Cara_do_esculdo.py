@@ -11,7 +11,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Jogo do Anão")
 
 # Carregar imagem de fundo
-background_image = pygame.image.load('D:/mapa.jpg').convert()
+background_image = pygame.image.load('Downloads/mapa.jpg').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
 
 # Definir cores
@@ -27,7 +27,7 @@ class Weapon(pygame.sprite.Sprite):
         self.weapon_type = weapon_type
         self.damage = damage
         if weapon_type == "True Shield":
-            self.image = pygame.image.load('D:/true_shield.png').convert_alpha()
+            self.image = pygame.image.load('Downloads/true_shield.png').convert_alpha()
             self.image = pygame.transform.scale(self.image, (60, 60))  # Tamanho do escudo
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -37,13 +37,13 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.attack_images = [
-            pygame.image.load('D:/Stannis baratheon.png').convert_alpha(),
-            pygame.image.load('D:/Stannis baratheon.png').convert_alpha()
+            pygame.image.load('Downloads/Stannis baratheon.png').convert_alpha(),
+            pygame.image.load('Downloads/Stannis baratheon.png').convert_alpha()
         ]
         self.image = self.attack_images[0]
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH // 4, HEIGHT // 2)
-        self.speed = 1
+        self.speed = 2
         self.max_health = 100
         self.health = self.max_health
         self.is_attacking = False
@@ -235,7 +235,7 @@ class Collectible(pygame.sprite.Sprite):
         self.item_type = item_type
         if item_type == "Fire Ball":
             try:
-                self.image = pygame.image.load('D:/colecio.png').convert_alpha()
+                self.image = pygame.image.load('Downloads/colecio.png').convert_alpha()
                 self.image = pygame.transform.scale(self.image, (30, 30))
             except pygame.error as e:
                 print(f"Erro ao carregar a imagem 'colecio.png': {e}")
@@ -243,7 +243,7 @@ class Collectible(pygame.sprite.Sprite):
                 self.image.fill(RED)
         elif item_type == "True Shield":
             try:
-                self.image = pygame.image.load('D:/true_shield.png').convert_alpha()
+                self.image = pygame.image.load('Downloads/true_shield.png').convert_alpha()
                 self.image = pygame.transform.scale(self.image, (60, 60))  # Tamanho do escudo
             except pygame.error as e:
                 print(f"Erro ao carregar a imagem 'true_shield.png': {e}")
@@ -257,7 +257,7 @@ class FireballAttack(pygame.sprite.Sprite):
     def __init__(self, x, y, direction, reflected=False):
         super().__init__()
         try:
-            self.image = pygame.image.load('D:/ball_fire_attack.png').convert_alpha()
+            self.image = pygame.image.load('Downloads/ball_fire_attack.png').convert_alpha()
             self.image = pygame.transform.scale(self.image, (30, 30))
         except pygame.error as e:
             print(f"Erro ao carregar a imagem 'ball_fire_attack.png': {e}")
@@ -299,8 +299,8 @@ def show_game_over(screen):
 player = Player()
 
 # Criar inimigos
-dragon1 = Enemy('D:/dragao.png', WIDTH - 100, HEIGHT // 2)
-dragon2 = Enemy('D:/dragao2.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
+dragon1 = Enemy('Downloads/dragao.png', WIDTH - 100, HEIGHT // 2)
+dragon2 = Enemy('Downloads/dragao2.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
 
 # Lista dos dragões
 dragons = pygame.sprite.Group()
