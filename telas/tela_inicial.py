@@ -18,7 +18,7 @@ pygame.display.set_caption("Menu - A Guerra dos Tronos")
 # Carregar imagens de fundo
 fundo_menu = pygame.image.load("Downloads/tela_menu_figma.png").convert()
 fundo_menu = pygame.transform.scale(fundo_menu, (LARGURA_TELA, ALTURA_TELA))
-fundo_menu_in = pygame.image.load("Downloads/escolhas_personagens.png").convert()
+fundo_menu_in = pygame.image.load("Downloads/escolhas_de_personagens.png").convert()
 fundo_menu_in = pygame.transform.scale(fundo_menu_in, (LARGURA_TELA, ALTURA_TELA))
 tela_historia = pygame.image.load("Downloads/tela_ifmenu.png").convert()
 tela_historia = pygame.transform.scale(tela_historia, (LARGURA_TELA, ALTURA_TELA))
@@ -58,18 +58,22 @@ def menu_principal():
             area_botao_personagem1 = pygame.Rect(60, 200, 180, 200)
             area_botao_personagem2 = pygame.Rect(300, 200, 200, 200)
             area_botao_personagem3 = pygame.Rect(550, 200, 200, 200)
-            
-            if area_botao_personagem1.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
+            area_botao_historia = pygame.Rect(51, 520, 60, 45)
+
+            if area_botao_historia.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
+                tela_atual = 'menu_principal'
+                clicado = True
+            elif area_botao_personagem1.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
                 print("Daenerys escolhida")
                 iniciar_jogo()
                 tela_inicial = False  # Exit loop
 
-            if area_botao_personagem2.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
+            elif area_botao_personagem2.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
                 print("Jon escolhido")
                 iniciar_jogo()
                 tela_inicial = False  # Exit loop
 
-            if area_botao_personagem3.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
+            elif area_botao_personagem3.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
                 print("Stannis escolhido")
                 iniciar_jogo()
                 tela_inicial = False  # Exit loop
