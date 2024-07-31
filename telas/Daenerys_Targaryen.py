@@ -11,7 +11,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Jogo do Ano")
 
 # Carregar imagem de fundo
-background_image = pygame.image.load('D:/mapa.jpg').convert()
+background_image = pygame.image.load('Downloads/mapa.jpg').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
 
 # Definir cores
@@ -24,14 +24,14 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.attack_images = [
-            pygame.image.load('D:/draca.png').convert_alpha(),
-            pygame.image.load('D:/draca.png').convert_alpha()
+            pygame.image.load('Downloads/draca.png').convert_alpha(),
+            pygame.image.load('Downloads/draca.png').convert_alpha()
         ]
         self.image = self.attack_images[0]
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH // 4, HEIGHT // 2)
         self.speed = 2
-        self.max_health = 100
+        self.max_health = 50
         self.health = self.max_health
         self.is_attacking = False
         self.attack_index = 0
@@ -196,7 +196,7 @@ class Collectible(pygame.sprite.Sprite):
         super().__init__()
         if item_type == "Fire Ball":
             try:
-                self.image = pygame.image.load('D:/colecio.png').convert_alpha()
+                self.image = pygame.image.load('Downloads/colecio.png').convert_alpha()
                 self.image = pygame.transform.scale(self.image, (30, 30))
             except pygame.error as e:
                 print(f"Erro ao carregar a imagem 'colecio.png': {e}")
@@ -204,7 +204,7 @@ class Collectible(pygame.sprite.Sprite):
                 self.image.fill(RED)
         elif item_type == "Ovo":
             try:
-                self.image = pygame.image.load('D:/ovo.png').convert_alpha()
+                self.image = pygame.image.load('Downloads/ovo.png').convert_alpha()
                 self.image = pygame.transform.scale(self.image, (30, 30))
             except pygame.error as e:
                 print(f"Erro ao carregar a imagem 'ovo.png': {e}")
@@ -228,7 +228,7 @@ class FireballAttack(pygame.sprite.Sprite):
         super().__init__()
         self.source = source
         try:
-            self.image = pygame.image.load('D:/ball_fire_attack.png').convert_alpha()
+            self.image = pygame.image.load('Downloads/ball_fire_attack.png').convert_alpha()
             self.image = pygame.transform.scale(self.image, (30, 30))
         except pygame.error as e:
             print(f"Erro ao carregar a imagem 'fireball.png': {e}")
@@ -262,8 +262,8 @@ def show_game_over(screen):
 
 player = Player()
 
-dragon1 = Enemy('D:/dragao.png', WIDTH - 100, HEIGHT // 2)
-dragon2 = Enemy('D:/dragao2.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
+dragon1 = Enemy('Downloads/dragao.png', WIDTH - 100, HEIGHT // 2)
+dragon2 = Enemy('Downloads/dragao2.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
 
 dragons = pygame.sprite.Group()
 dragons.add(dragon1, dragon2)
