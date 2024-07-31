@@ -6,7 +6,6 @@ pygame.init()
 
 # Cores
 BRANCO = (255, 255, 255)
-PRETO = (0, 0, 0)
 
 # Dimensões da tela
 LARGURA_TELA = 800
@@ -24,30 +23,25 @@ fundo_menu_in = pygame.transform.scale(fundo_menu_in, (LARGURA_TELA, ALTURA_TELA
 tela_historia = pygame.image.load("Downloads/tela_ifmenu.png").convert()
 tela_historia = pygame.transform.scale(tela_historia, (LARGURA_TELA, ALTURA_TELA))
 
-# função para inicio do jogo (trocar para a tela das fases para implementação)
+# Função para iniciar o jogo
 def iniciar_jogo():
-    # Função para iniciar o jogo
     fundo_jogo_iniciado = pygame.image.load("Downloads/tela_jogo_iniciado.png").convert()
     fundo_jogo_iniciado = pygame.transform.scale(fundo_jogo_iniciado, (LARGURA_TELA, ALTURA_TELA))
-
-    # Exibir a tela do jogo iniciado por 5 segundos
     tela.blit(fundo_jogo_iniciado, (0, 0))
     pygame.display.update()
-    pygame.time.wait(5000)  # Espera 5 segundos para que o jogador veja a mensagem
+    pygame.time.wait(5000)  # Espera 5 segundos
 
 def menu_principal():
     tela_atual = 'menu_principal'
     clicado = False
     tela_inicial = True
-    
+
     while tela_inicial:
+        mx, my = pygame.mouse.get_pos()
         tela.fill(BRANCO)
         
         if tela_atual == 'menu_principal':
             tela.blit(fundo_menu, (0, 0))
-            mx, my = pygame.mouse.get_pos()
-            
-            # Áreas dos botões no menu principal
             area_botao_iniciar = pygame.Rect(280, 310, 250, 50)
             area_botao_menu = pygame.Rect(350, 390, 100, 50)
             
@@ -58,12 +52,9 @@ def menu_principal():
             if area_botao_menu.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
                 tela_atual = 'tela_historia'
                 clicado = True
-        # direcionamento da tela para escolha dos personagens
+        
         elif tela_atual == 'escolha_personagem':
             tela.blit(fundo_menu_in, (0, 0))
-            mx, my = pygame.mouse.get_pos()
-            
-            # Áreas dos botões de personagens
             area_botao_personagem1 = pygame.Rect(60, 200, 180, 200)
             area_botao_personagem2 = pygame.Rect(300, 200, 200, 200)
             area_botao_personagem3 = pygame.Rect(550, 200, 200, 200)
@@ -71,23 +62,25 @@ def menu_principal():
             if area_botao_personagem1.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
                 print("Daenerys escolhida")
                 iniciar_jogo()
-                tela_inicial = not tela_inicial
+                tela_inicial = False  # Exit loop
 
             if area_botao_personagem2.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
                 print("Jon escolhido")
                 iniciar_jogo()
-                tela_inicial = not tela_inicial
+                tela_inicial = False  # Exit loop
 
             if area_botao_personagem3.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
                 print("Stannis escolhido")
                 iniciar_jogo()
-                tela_inicial = not tela_inicial
+                tela_inicial = False  # Exit loop
         
         elif tela_atual == "tela_historia":
-            area_botao_historia = pygame.Rect(350, 390, 100, 50)
+            tela.blit(tela_historia, (0, 0))
+            area_botao_historia = pygame.Rect(51, 520, 60, 45)
             if area_botao_historia.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
-                menu_principal()
-                tela_inicial = not tela_inicial
+                tela_atual = 'menu_principal'
+                clicado = True
+        
         # Tratamento de eventos
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
@@ -96,6 +89,10 @@ def menu_principal():
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 if evento.button == 1:
                     clicado = False  # Resetar clicado quando o botão do mouse é pressionado
+                    
+            if evento.type == pygame.MOUSEBUTTONUP:
+                if evento.button == 1:
+                    clicado = True  # Permitir nova detecção de clique
                     
         pygame.display.update()
 
