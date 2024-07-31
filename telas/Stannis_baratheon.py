@@ -14,11 +14,21 @@ pygame.display.set_caption("Jogo do Anão")
 background_image = pygame.image.load('Downloads/mapa.jpg').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
 
+# Carregar imagens da barra de vida
+health_bar_full = pygame.image.load('Downloads/health_bar_full.png').convert_alpha()
+health_bar_half = pygame.image.load('Downloads/health_bar_half.png').convert_alpha()
+health_bar_low = pygame.image.load('Downloads/health_bar_low.png').convert_alpha()
+
+# Redimensionar as imagens da barra de vida para o tamanho adequado
+health_bar_full = pygame.transform.scale(health_bar_full, (60, 6))
+health_bar_half = pygame.transform.scale(health_bar_half, (60, 6))
+health_bar_low = pygame.transform.scale(health_bar_low, (60, 6))
+
 # Definir cores
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
+YELLOW = (255, 255, 0)
 RED = (255, 0, 0)
-BLUE = (0, 0, 255)
 
 # Classe para as armas
 class Weapon(pygame.sprite.Sprite):
@@ -160,14 +170,18 @@ class Player(pygame.sprite.Sprite):
             screen.blit(self.shield.image, self.shield.rect)
 
     def draw_health_bar(self, screen):
-        bar_width = 100
-        bar_height = 10
+        bar_width = 60
+        bar_height = 6
         bar_x = self.rect.centerx - bar_width // 2
         bar_y = self.rect.top - 20
         health_ratio = self.health / self.max_health
-        health_bar_width = int(bar_width * health_ratio)
-        pygame.draw.rect(screen, RED, (bar_x, bar_y, bar_width, bar_height))
-        pygame.draw.rect(screen, GREEN, (bar_x, bar_y, health_bar_width, bar_height))
+
+        if health_ratio > 0.66:
+            screen.blit(health_bar_full, (bar_x, bar_y))
+        elif health_ratio > 0.33:
+            screen.blit(health_bar_half, (bar_x, bar_y))
+        else:
+            screen.blit(health_bar_low, (bar_x, bar_y))
 
     def draw_inventory(self, screen):
         font = pygame.font.Font(None, 24)
@@ -211,14 +225,19 @@ class Enemy(pygame.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
     def draw_health_bar(self, screen):
-        bar_width = 100
-        bar_height = 10
+        bar_width = 60
+        bar_height = 6
         bar_x = self.rect.centerx - bar_width // 2
         bar_y = self.rect.top - 20
         health_ratio = self.health / self.max_health
-        health_bar_width = int(bar_width * health_ratio)
-        pygame.draw.rect(screen, RED, (bar_x, bar_y, bar_width, bar_height))
-        pygame.draw.rect(screen, GREEN, (bar_x, bar_y, health_bar_width, bar_height))
+
+        # Usar a barra de vida padrão para o dragão
+        if health_ratio > 0.66:
+            pygame.draw.rect(screen, GREEN, (bar_x, bar_y, bar_width, bar_height))
+        elif health_ratio > 0.33:
+            pygame.draw.rect(screen, YELLOW, (bar_x, bar_y, bar_width, bar_height))
+        else:
+            pygame.draw.rect(screen, RED, (bar_x, bar_y, bar_width, bar_height))
 
     def take_damage(self, damage):
         self.health -= damage
@@ -300,7 +319,7 @@ player = Player()
 
 # Criar inimigos
 dragon1 = Enemy('Downloads/dragao.png', WIDTH - 100, HEIGHT // 2)
-dragon2 = Enemy('Downloads/dragao2.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
+dragon2 = Enemy('Downloads/dragao.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
 
 # Lista dos dragões
 dragons = pygame.sprite.Group()
