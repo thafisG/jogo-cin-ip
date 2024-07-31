@@ -19,16 +19,19 @@ pygame.display.set_caption("Menu - A Guerra dos Tronos")
 # Carregar imagens de fundo
 fundo_menu = pygame.image.load("Downloads/tela_menu_figma.png").convert()
 fundo_menu = pygame.transform.scale(fundo_menu, (LARGURA_TELA, ALTURA_TELA))
-fundo_menu_in = pygame.image.load("Downloads/escolhas_de_personagens.png").convert()
+fundo_menu_in = pygame.image.load("Downloads/escolhas_personagens.png").convert()
 fundo_menu_in = pygame.transform.scale(fundo_menu_in, (LARGURA_TELA, ALTURA_TELA))
+tela_historia = pygame.image.load("Downloads/tela_ifmenu.png").convert()
+tela_historia = pygame.transform.scale(tela_historia, (LARGURA_TELA, ALTURA_TELA))
 
 # função para inicio do jogo (trocar para a tela das fases para implementação)
 def iniciar_jogo():
     # Função para iniciar o jogo
-    tela.fill(BRANCO)
-    fonte = pygame.font.Font(None, 30)
-    texto = fonte.render("Começo da Batalha, será que você consegue conquistar o trono?", True, PRETO)
-    tela.blit(texto, (LARGURA_TELA // 8, ALTURA_TELA // 2))
+    fundo_jogo_iniciado = pygame.image.load("Downloads/tela_jogo_iniciado.png").convert()
+    fundo_jogo_iniciado = pygame.transform.scale(fundo_jogo_iniciado, (LARGURA_TELA, ALTURA_TELA))
+
+    # Exibir a tela do jogo iniciado por 5 segundos
+    tela.blit(fundo_jogo_iniciado, (0, 0))
     pygame.display.update()
     pygame.time.wait(5000)  # Espera 5 segundos para que o jogador veja a mensagem
 
@@ -53,7 +56,7 @@ def menu_principal():
                 clicado = True
             
             if area_botao_menu.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
-                print("Voltar ao menu")
+                tela_atual = 'tela_historia'
                 clicado = True
         # direcionamento da tela para escolha dos personagens
         elif tela_atual == 'escolha_personagem':
@@ -76,10 +79,15 @@ def menu_principal():
                 tela_inicial = not tela_inicial
 
             if area_botao_personagem3.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
-                print("Sansa escolhida")
+                print("Stannis escolhido")
                 iniciar_jogo()
                 tela_inicial = not tela_inicial
-            
+        
+        elif tela_atual == "tela_historia":
+            area_botao_historia = pygame.Rect(350, 390, 100, 50)
+            if area_botao_historia.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
+                menu_principal()
+                tela_inicial = not tela_inicial
         # Tratamento de eventos
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
