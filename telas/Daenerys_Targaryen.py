@@ -20,6 +20,18 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 
+# Carregar imagens da barra de vida
+life_bar_images = {
+    'full': pygame.image.load('Downloads/health_bar_full.png').convert_alpha(),
+    'medium': pygame.image.load('Downloads/health_bar_half.png').convert_alpha(),
+    'empty': pygame.image.load('Downloads/health_bar_low.png').convert_alpha()
+}
+
+# Redimensionar imagens da barra de vida
+bar_width, bar_height = 60, 6
+for key in life_bar_images:
+    life_bar_images[key] = pygame.transform.scale(life_bar_images[key], (bar_width, bar_height))
+
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -31,7 +43,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH // 4, HEIGHT // 2)
         self.speed = 2
-        self.max_health = 50
+        self.max_health = 25
         self.health = self.max_health
         self.is_attacking = False
         self.attack_index = 0
@@ -102,14 +114,19 @@ class Player(pygame.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
     def draw_health_bar(self, screen):
-        bar_width = 100
-        bar_height = 10
         bar_x = self.rect.centerx - bar_width // 2
         bar_y = self.rect.top - 20
-        health_ratio = self.health / self.max_health
-        health_bar_width = int(bar_width * health_ratio)
-        pygame.draw.rect(screen, RED, (bar_x, bar_y, bar_width, bar_height))
-        pygame.draw.rect(screen, GREEN, (bar_x, bar_y, health_bar_width, bar_height))
+
+        # Determinar a imagem da barra de vida com base no nível de saúde
+        if self.health > 0.66 * self.max_health:
+            life_bar_image = life_bar_images['full']
+        elif self.health > 0.33 * self.max_health:
+            life_bar_image = life_bar_images['medium']
+        else:
+            life_bar_image = life_bar_images['empty']
+
+        # Ajustar a posição e desenhar a imagem da barra de vida
+        screen.blit(life_bar_image, (bar_x, bar_y))
 
     def draw_inventory(self, screen):
         font = pygame.font.Font(None, 24)
@@ -172,8 +189,6 @@ class Enemy(pygame.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
     def draw_health_bar(self, screen):
-        bar_width = 100
-        bar_height = 10
         bar_x = self.rect.centerx - bar_width // 2
         bar_y = self.rect.top - 20
         health_ratio = self.health / self.max_health
@@ -187,19 +202,19 @@ class Enemy(pygame.sprite.Sprite):
             self.kill()
             # Criar item "Fire Ball" quando o dragão é derrotado
             create_collectible(self.rect.centerx, self.rect.bottom, "Fire Ball")
-            # Não removemos o dragão do grupo; ele só irá reaparecer na tela
-            self.health = self.max_health
-            self.rect.center = (WIDTH - 100, random.randint(50, HEIGHT - 50))
+            # Não reaparecer se a vida chegar a 0
+            self.reappearance_delay = 0
 
 class Collectible(pygame.sprite.Sprite):
     def __init__(self, x, y, item_type):
         super().__init__()
+        self.item_type = item_type
         if item_type == "Fire Ball":
             try:
                 self.image = pygame.image.load('Downloads/colecio.png').convert_alpha()
                 self.image = pygame.transform.scale(self.image, (30, 30))
             except pygame.error as e:
-                print(f"Erro ao carregar a imagem 'colecio.png': {e}")
+                print(f"Erro ao carregar a imagem 'fireball.png': {e}")
                 self.image = pygame.Surface((30, 30))
                 self.image.fill(RED)
         elif item_type == "Ovo":
@@ -236,7 +251,7 @@ class FireballAttack(pygame.sprite.Sprite):
             self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
-        self.speed = 5  # Reduzido a velocidade dos projéteis
+        self.speed = 5
 
     def update(self):
         if self.source == "player":
@@ -290,7 +305,7 @@ while running:
     collected_items = pygame.sprite.spritecollide(player, collectibles, True)
     for item in collected_items:
         if isinstance(item, Collectible):
-            if item.image.get_at((0, 0)) != RED:  # Corrigido para permitir coleta se a cor não for RED
+            if item.image.get_at((0, 0)) != RED:
                 if item.image.get_at((0, 0)) == BLUE:
                     player.increase_fireball_speed()  # Aumenta a velocidade do disparo
                 else:
@@ -299,7 +314,6 @@ while running:
                         player.enable_double_shoot()  # Habilita o disparo duplo após pegar o item "Ovo"
                         player.inventory["Ovo"] += 1  # Atualiza o inventário para refletir a coleta do item
 
-    # Verificar colisões entre projéteis e inimigos
     for fireball in fireballs.copy():
         if fireball.source == "player":
             dragons_hit = pygame.sprite.spritecollide(fireball, dragons, False)
@@ -311,14 +325,12 @@ while running:
                 player.health -= 5
                 fireball.kill()
 
-    # Verificar se o jogador morreu
     if player.health <= 0:
         show_game_over(screen)
         pygame.display.flip()
         pygame.time.delay(2000)
         running = False
 
-    # Atualizar e desenhar
     screen.blit(background_image, (0, 0))
     all_sprites.draw(screen)
     player.draw_health_bar(screen)
