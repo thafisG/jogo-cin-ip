@@ -24,12 +24,16 @@ tela_historia = pygame.image.load("Downloads/tela_ifmenu.png").convert()
 tela_historia = pygame.transform.scale(tela_historia, (LARGURA_TELA, ALTURA_TELA))
 
 # Função para iniciar o jogo
-def iniciar_jogo():
-    fundo_jogo_iniciado = pygame.image.load("Downloads/tela_jogo_iniciado.png").convert()
-    fundo_jogo_iniciado = pygame.transform.scale(fundo_jogo_iniciado, (LARGURA_TELA, ALTURA_TELA))
-    tela.blit(fundo_jogo_iniciado, (0, 0))
-    pygame.display.update()
-    pygame.time.wait(5000)  # Espera 5 segundos
+def iniciar_jogo(personagem):
+    if personagem == "Daenerys":
+        import draca
+        draca.main()
+    elif personagem == "Jon":
+        import jogo_do_ano
+        jogo_do_ano.main()
+    elif personagem == "Stannis":
+        import tela3
+        tela3.main()
 
 def menu_principal():
     tela_atual = 'menu_principal'
@@ -65,17 +69,17 @@ def menu_principal():
                 clicado = True
             elif area_botao_personagem1.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
                 print("Daenerys escolhida")
-                iniciar_jogo()
+                iniciar_jogo("Daenerys")
                 tela_inicial = False  # Exit loop
 
             elif area_botao_personagem2.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
                 print("Jon escolhido")
-                iniciar_jogo()
+                iniciar_jogo("Jon")
                 tela_inicial = False  # Exit loop
 
             elif area_botao_personagem3.collidepoint((mx, my)) and pygame.mouse.get_pressed()[0] and not clicado:
                 print("Stannis escolhido")
-                iniciar_jogo()
+                iniciar_jogo("Stannis")
                 tela_inicial = False  # Exit loop
         
         elif tela_atual == "tela_historia":
