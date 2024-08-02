@@ -13,7 +13,7 @@ pygame.display.set_caption("Jogo do Ano")
 # Carregar imagem de fundo
 background_image = pygame.image.load('Downloads/mapa.jpg').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
-
+tela_derrota_image = pygame.image.load('Downloads/tela_derrota.png').convert_alpha()
 # Definir cores
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
@@ -73,6 +73,9 @@ class Player(pygame.sprite.Sprite):
         
         if keys[pygame.K_a]:
             self.attack()
+
+        # Verificar colisão com inimigos
+        self.check_collision_with_enemies()
 
     def attack(self):
         self.is_attacking = True
@@ -145,6 +148,16 @@ class Player(pygame.sprite.Sprite):
     def enable_double_shoot(self):
         # Ativa o disparo duplo
         self.double_shoot = True
+
+    def check_collision_with_enemies(self):
+        enemies_hit = pygame.sprite.spritecollide(self, dragons, False)
+        for enemy in enemies_hit:
+            self.take_damage()
+
+    def take_damage(self):
+        self.health -= 5  # Define o valor de dano a ser aplicado
+        if self.health <= 0:
+            self.health = 0  # Garantir que a saúde não fique negativa
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, image_path, x, y):
@@ -269,11 +282,19 @@ def create_collectible(x, y, item_type):
     collectibles.add(collectible)
     all_sprites.add(collectible)
 
-def show_game_over(screen):
-    font = pygame.font.Font(None, 36)
-    text = font.render("Fim de Jogo", True, WHITE)
-    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-    screen.blit(text, text_rect)
+def tela_derrota(screen):
+    screen.blit(tela_derrota_image, (0, 0))
+    pygame.display.flip()
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
 
 player = Player()
 
@@ -305,14 +326,12 @@ while running:
     collected_items = pygame.sprite.spritecollide(player, collectibles, True)
     for item in collected_items:
         if isinstance(item, Collectible):
-            if item.image.get_at((0, 0)) != RED:
-                if item.image.get_at((0, 0)) == BLUE:
-                    player.increase_fireball_speed()  # Aumenta a velocidade do disparo
-                else:
-                    player.inventory["Fire Ball"] += 1
-                    if player.inventory["Ovo"] == 0:
-                        player.enable_double_shoot()  # Habilita o disparo duplo após pegar o item "Ovo"
-                        player.inventory["Ovo"] += 1  # Atualiza o inventário para refletir a coleta do item
+            if item.item_type == "Fire Ball":
+                player.inventory["Fire Ball"] += 1
+            elif item.item_type == "Ovo":
+                player.inventory["Ovo"] += 1
+                player.enable_double_shoot()  # Habilita o disparo duplo após pegar o item "Ovo"
+                player.increase_fireball_speed()  # Aumenta a velocidade do disparo
 
     for fireball in fireballs.copy():
         if fireball.source == "player":
@@ -322,13 +341,11 @@ while running:
                 fireball.kill()
         elif fireball.source == "enemy":
             if pygame.sprite.collide_rect(player, fireball):
-                player.health -= 5
+                player.take_damage()
                 fireball.kill()
 
     if player.health <= 0:
-        show_game_over(screen)
-        pygame.display.flip()
-        pygame.time.delay(2000)
+        tela_derrota(screen)
         running = False
 
     screen.blit(background_image, (0, 0))
