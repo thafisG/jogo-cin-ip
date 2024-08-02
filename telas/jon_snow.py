@@ -13,6 +13,7 @@ pygame.display.set_caption("Jogo do Ano")
 # Carregar imagem de fundo
 background_image = pygame.image.load('Downloads/mapa.jpg').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
+tela_derrota_image = pygame.image.load('Downloads/tela_derrota.png').convert_alpha()
 
 # Carregar imagens das barras de vida
 life_bar_images = {
@@ -267,13 +268,9 @@ def create_collectible(x, y, item_type):
 
 # Função para exibir a tela de Game Over
 def game_over_screen():
-    screen.fill(RED)
-    font = pygame.font.Font(None, 74)
-    text = font.render("Game Over", True, WHITE)
-    screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 2 - text.get_height() // 2))
+    screen.blit(tela_derrota_image, (0, 0))
     pygame.display.flip()
     pygame.time.wait(2000)  # Exibir tela de Game Over por 2 segundos
-
     pygame.quit()
     sys.exit()
 
