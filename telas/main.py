@@ -26,14 +26,14 @@ tela_historia = pygame.transform.scale(tela_historia, (LARGURA_TELA, ALTURA_TELA
 # Função para iniciar o jogo
 def iniciar_jogo(personagem):
     if personagem == "Daenerys":
-        import Daenerys_Targaryen
-        Daenerys_Targaryen.main()
+        import daenerys_targaryen
+        daenerys_targaryen.main()
     elif personagem == "Jon":
-        import Jon_Snow
-        Jon_Snow.main()
+        import jon_snow
+        jon_snow.main()
     elif personagem == "Stannis":
-        import Stannis_baratheon
-        Stannis_baratheon.main()
+        import stannis_baratheon
+        stannis_baratheon.main()
 
 def menu_principal():
     tela_atual = 'menu_principal'
