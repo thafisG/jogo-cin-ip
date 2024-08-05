@@ -89,9 +89,9 @@ Jogador      |     Teclas    |
 ## Imagens do jogo:
 
 <p align="center">
-  <img src="imagens_do_jogo/tela_incial.png" alt="Tela Inicial" width="450" style="display: inline-block;" />
-  <img src="imagens_do_jogo/derrota_do_personagem.gif" alt="Derrota do Personagem" width="450" style="display: inline-block;" />
-  <img src="imagens_do_jogo/tela_ifmenu.png" alt="Tela Historia" width="450" style="display: inline-block;" />
-  <img src="imagens_do_jogo/tela_vitoria.png" alt="Tela Vitória" width="450" style="display: inline-block;" />
+  <img src="imagens_do_jogo/tela_incial.png" alt="Tela Inicial" width="400" style="display: inline-block;" />
+  <img src="imagens_do_jogo/derrota_do_personagem.gif" alt="Derrota do Personagem" width="400" style="display: inline-block;" />
+  <img src="imagens_do_jogo/tela_ifmenu.png" alt="Tela Historia" width="400" style="display: inline-block;" />
+  <img src="imagens_do_jogo/tela_vitoria.png" alt="Tela Vitória" width="400" style="display: inline-block;" />
 </p>
 
