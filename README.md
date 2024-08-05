@@ -86,6 +86,26 @@ Jogador      |     Teclas    |
 - Criação dos assets do projeto
 - Organização e Gestão de Tempo
 
+
+## Estruturação do Código
+
+Com base no conteúdo abordado durante o período da disciplina, o código foi aprimorado para incorporar comandos e lógicas de programação de maneira eficiente, utilizando comandos condicionais, laços de repetição, funções, tuplas e dicionários. O jogo é iniciado e gerenciado pelo Pygame, que executa as imagens e recursos necessários. A implementação de classes, incluindo Player, Enemy, Collectible e FireballAttack, foi fundamental para estruturar e organizar o código. O loop principal do jogo interliga todos os componentes e garante seu funcionamento, atualizando os sprites através da função update. Além disso, as tuplas são empregadas para controlar as dimensões da tela e dos elementos do jogo, oferecendo uma maneira eficaz de gerenciar as coordenadas e tamanhos no ambiente gráfico. 
+
+## Organização do Código
+
+Funções e Classes importantes:
+
+ ## Classe - Player():
+
+ - update(): Atualiza a posição do jogador com base nas teclas pressionadas e verifica colisões.
+ - attack(): Gerencia a animação de ataque e o dano aos inimigos.
+ - shoot(): Dispara projéteis, respeitando o cooldown.
+ - draw(): Desenha o jogador na tela.
+ - draw_health_bar(): Desenha a barra de vida do jogador.
+ - draw_inventory(): Desenha o inventário do jogador. 
+
+
+
 ## Imagens do jogo:
 
 <p align="center">
