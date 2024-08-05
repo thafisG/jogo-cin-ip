@@ -78,6 +78,13 @@ Jogador      |     Teclas    |
 |  Sys | A função está sendo utilizada para encerrar o programa quando necessário, como em casos de derrota do jogador ou ao sofrer danos na classe. Ela garante que o jogo seja finalizado de forma limpa, seja por uma tela de derrota ou por outras condições que exigem o término do jogo.|
 | Figma | Ferramenta utilizada para o design e criação de interfaces do projeto e elementos gráficos. |
 
+## Desafios Enfrentados:
+
+- Utilizar o pygame
+- Interação com os coletáveis
+- Mecânica de combate
+- Criação dos assets do projeto
+- Organização e Gestão de Tempo
 
 ## Imagens do jogo:
 
