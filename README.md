@@ -69,7 +69,14 @@ Jogador      |     Teclas    |
 |  Stannis Baratheon|True Shield |item colecionável disponível para o cruel Stannis Baratheon,o True Shield tem a poderosa habilidade de refletir os projéteis disparados pelos dragões, além de conceder a verdadeira defesa absoluta para que nada fique no caminho de Stannis Baratheon até o trono. |
 | PyroPoints | Todos|Após a derrota dos dragões, o seu massivo poder é condensado em uma esfera de fogo, o qual o jogador deve coletar para demonstrar como uma forma de troféu pela sua bravura. |
 
+# Bibliotecas e Ferramentas
 
+|     Nome    |     Aplicação     | 
+| ------------------- | ------------------- | 
+|  Pygame | A biblioteca principal foi essencial para a criação do projeto, pois ofereceu uma vasta gama de comandos e funcionalidades que foram fundamentais para sua execução. |
+|  Random| Para otimizar o surgimento dos dragões e melhorar as funcionalidades do código, considere as seguintes abordagens |  
+|  Sys | A função está sendo utilizada para redirecionamento das telas, seja por derrota ou simplesmente para o dano recebido na classe|
+| Figma | A função está sendo utilizada para encerrar o programa quando necessário, como em casos de derrota do jogador ou ao sofrer danos na classe. Ela garante que o jogo seja finalizado de forma limpa, seja por uma tela de derrota ou por outras condições que exigem o término do jogo.|
 
 
 ## Imagens do jogo:
