@@ -75,8 +75,8 @@ Jogador      |     Teclas    |
 | ------------------- | ------------------- | 
 |  Pygame | A biblioteca principal foi essencial para a criação do projeto, pois ofereceu uma vasta gama de comandos e funcionalidades que foram fundamentais para sua execução. |
 |  Random| Para otimizar o surgimento dos dragões e melhorar as funcionalidades do código, considere as seguintes abordagens |  
-|  Sys | A função está sendo utilizada para redirecionamento das telas, seja por derrota ou simplesmente para o dano recebido na classe|
-| Figma | A função está sendo utilizada para encerrar o programa quando necessário, como em casos de derrota do jogador ou ao sofrer danos na classe. Ela garante que o jogo seja finalizado de forma limpa, seja por uma tela de derrota ou por outras condições que exigem o término do jogo.|
+|  Sys | A função está sendo utilizada para encerrar o programa quando necessário, como em casos de derrota do jogador ou ao sofrer danos na classe. Ela garante que o jogo seja finalizado de forma limpa, seja por uma tela de derrota ou por outras condições que exigem o término do jogo.|
+| Figma | Ferramenta utilizada para o design e criação de interfaces do projeto e elementos gráficos. |
 
 
 ## Imagens do jogo:
