@@ -1,0 +1,226 @@
+import pygame
+import random
+import sys
+from pygame.locals import *
+
+# Configurações iniciais
+WIDTH, HEIGHT = 800, 600
+FPS = 60
+
+# Inicializar Pygame
+pygame.init()
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Fase 2 - Game of Thrones")
+
+# Cores
+WHITE = (255, 255, 255)
+BROWN = (139, 69, 19)
+RED = (255, 0, 0)
+BLACK = (0, 0, 0)
+
+# Carregar imagem de fundo da fase 2
+background_image = pygame.image.load('assets/fase_2/norte_png.png').convert()
+background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
+
+# Carregar sprites dos personagens
+character_images = {
+    'Daenerys': pygame.image.load('assets/fase_1/draca.png').convert_alpha(),
+    'Jon': pygame.image.load('assets/fase_1/snow.png').convert_alpha(),
+    'Stannis': pygame.image.load('assets/fase_1/Stannis baratheon.png').convert_alpha()
+}
+
+# Carregar sprites dos inimigos
+enemy_image = pygame.image.load('assets/fase_2/kingslayer.png').convert_alpha()
+
+# Classe do projétil
+class Projectile(pygame.sprite.Sprite):
+    def __init__(self, image, start_pos, target, speed):
+        super().__init__()
+        self.image = pygame.Surface((10, 10))  # Placeholder, pode ser substituído pela imagem desejada
+        self.image.fill(RED)  # Placeholder para visualização
+        self.rect = self.image.get_rect(center=start_pos)
+        self.target = target
+        self.speed = speed
+
+        # Calcular direção
+        direction = pygame.math.Vector2(target.rect.center) - pygame.math.Vector2(start_pos)
+        self.velocity = direction.normalize() * self.speed
+
+    def update(self):
+        self.rect.x += self.velocity.x
+        self.rect.y += self.velocity.y
+
+        # Verifica colisão com o alvo
+        if self.rect.colliderect(self.target.rect):
+            self.target.health -= 1
+            self.kill()  # Remove o projétil após atingir o alvo
+
+# Classe do Personagem
+class Character(pygame.sprite.Sprite):
+    def __init__(self, image, x, y):
+        super().__init__()
+        self.original_image = image
+        self.image = pygame.transform.scale(self.original_image, (80, 80))  # Aumentar o tamanho do personagem
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.speed = 3  # Diminuir a velocidade do personagem
+        self.health = 3  # Diminuir a vida do personagem
+        self.last_shot_time = 0  # Variável para controlar o tempo entre disparos
+
+    def update(self):
+        keys = pygame.key.get_pressed()
+        if keys[K_LEFT]:
+            self.rect.x -= self.speed
+        if keys[K_RIGHT]:
+            self.rect.x += self.speed
+        if keys[K_UP]:
+            self.rect.y -= self.speed
+        if keys[K_DOWN]:
+            self.rect.y += self.speed
+        if keys[K_k]:
+            self.attack(enemy)  # Atacar o inimigo ao pressionar K
+
+    def attack(self, target):
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_shot_time >= 500:  # Agora o disparo ocorre a cada meio segundo (500 milissegundos)
+            projectile = Projectile(self.image, self.rect.center, target, speed=4)  # Diminuir velocidade do projétil
+            all_sprites.add(projectile)
+            projectiles.add(projectile)
+            self.last_shot_time = current_time  # Atualiza o tempo do último disparo
+
+# Classe do Inimigo
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, image, x, y):
+        super().__init__()
+        self.original_image = image
+        self.image = pygame.transform.scale(self.original_image, (150, 150))  # Aumentar o tamanho do inimigo
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.speed = 1.5  # Diminuir a velocidade de movimento do inimigo
+        self.health = 15  # Aumentar a vida do inimigo
+        self.attack_cooldown = 0
+
+    def update(self):
+        # Lógica para seguir o personagem mantendo uma distância
+        player_dist = pygame.math.Vector2(player.rect.center) - pygame.math.Vector2(self.rect.center)
+        if player_dist.length() > 180:  # Aumentar a distância limite entre o inimigo e o personagem principal
+            self.rect.x += self.speed if player_dist.x > 0 else -self.speed
+            self.rect.y += self.speed if player_dist.y > 0 else -self.speed
+        
+        # Lógica para atacar a cada 3 segundos
+        if self.attack_cooldown == 0:
+            self.attack_cooldown = 180  # 3 segundos * 60 FPS
+            self.attack(player)  # Realiza o ataque no player
+        else:
+            self.attack_cooldown -= 1
+
+    def attack(self, target):
+        projectile = Projectile(self.image, self.rect.center, target, speed=6)  # Aumentar velocidade do projétil do inimigo
+        all_sprites.add(projectile)
+        projectiles.add(projectile)
+
+# Tela de introdução
+def show_intro():
+    intro_font = pygame.font.Font(pygame.font.match_font('gabriola'), 25)
+    button_font = pygame.font.Font(pygame.font.match_font('gabriola'), 20)
+
+    intro_text = intro_font.render("Este é o Kingslayer, mate-o para provar que é merecedor do trono de ferro,", True, WHITE)
+    intro_text_2 = intro_font.render("ou morra nas mãos dele", True, WHITE)
+    button_text = button_font.render("OK", True, WHITE)
+
+    text_rect = intro_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
+    text_rect_2 = intro_text_2.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 20))
+    button_rect = pygame.Rect(0, 0, 80, 40)
+    button_rect.center = (WIDTH // 2, HEIGHT // 2 + 50)
+
+    while True:
+        screen.blit(background_image, (0, 0))  # Sobrepor o fundo do jogo
+        pygame.draw.rect(screen, BROWN, (WIDTH // 2 - 300, HEIGHT // 2 - 100, 600, 150))  # Quadro da mensagem
+        screen.blit(intro_text, text_rect)
+        screen.blit(intro_text_2, text_rect_2)
+        pygame.draw.ellipse(screen, BLACK, button_rect)  # Botão oval
+        screen.blit(button_text, button_rect.move(27, 10))  # Centralizar o texto "OK"
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == MOUSEBUTTONDOWN and button_rect.collidepoint(event.pos):
+                return
+
+        pygame.display.flip()
+
+# Tela de vitória ou derrota
+def show_end_screen(message):
+    end_font = pygame.font.Font(pygame.font.match_font('gabriola'), 40)
+    end_text = end_font.render(message, True, WHITE)
+    text_rect = end_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+
+    while True:
+        screen.fill(BLACK)
+        screen.blit(end_text, text_rect)
+
+        for event in pygame.event.get():
+            if event.type == QUIT or event.type == KEYDOWN:
+                pygame.quit()
+                sys.exit()
+
+        pygame.display.flip()
+
+# Função principal da fase 2
+def fase_2(character_choice):
+    clock = pygame.time.Clock()
+
+    # Grupos de sprites
+    global player, enemy, all_sprites, projectiles  # Definido como global para ser acessado pela classe Enemy e Character
+    all_sprites = pygame.sprite.Group()
+    enemies = pygame.sprite.Group()
+    projectiles = pygame.sprite.Group()
+
+    # Mostrar tela de introdução
+    show_intro()
+
+    # Instanciar personagem escolhido
+    player = Character(character_images[character_choice], WIDTH // 2, HEIGHT - 50)
+    all_sprites.add(player)
+
+    # Instanciar inimigos
+    enemy = Enemy(enemy_image, random.randint(WIDTH, WIDTH + 100), random.randint(50, 200 - 50))
+    all_sprites.add(enemy)
+    enemies.add(enemy)
+
+    enemy_defeated = False  # Variável para evitar loop infinito ao derrotar o inimigo
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+
+        # Atualizar sprites
+        all_sprites.update()
+
+        # Verificar se o jogador ou inimigo foi derrotado
+        if player.health <= 0:
+            show_end_screen("Você perdeu!")
+            running = False
+        elif enemy.health <= 0 and not enemy_defeated:
+            print("Inimigo derrotado!")
+            enemy.kill()  # Remover inimigo
+            enemy_defeated = True
+            show_end_screen("Você venceu!")
+            running = False
+
+        # Desenhar fundo e sprites
+        screen.blit(background_image, (0, 0))
+        all_sprites.draw(screen)
+
+        # Atualizar a tela
+        pygame.display.flip()
+        clock.tick(FPS)
+
+    pygame.quit()
+
+
+fase_2('Daenerys')  # Testar com Jon Snow
