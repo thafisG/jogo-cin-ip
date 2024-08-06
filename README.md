@@ -92,6 +92,8 @@ Com base no conteúdo abordado durante o período da disciplina, o código foi a
 
 ## Organização do Código
 
+## Organização do Código
+
 ## Funções e Classes importantes:
 
  ### Classe - Player():
@@ -103,6 +105,31 @@ Com base no conteúdo abordado durante o período da disciplina, o código foi a
  - draw_health_bar(): Desenha a barra de vida do jogador.
  - draw_inventory(): Desenha o inventário do jogador. 
 
+
+### Classe - Weapon():
+
+- __init__(x, y, weapon_type, damage): Inicializa uma instância de arma, definindo o tipo de arma, dano, imagem e posição (x, y).
+
+### Classe - Enemy():
+
+- __init__(image_path, x, y): Inicializa a instância do inimigo (dragão), configurando a imagem, posição, velocidade, vida e atributos de ataque.
+- update(): Atualiza a posição do inimigo, movendo-o da direita para a esquerda, e gerencia o ataque (lançando bolas de fogo) com base no cooldown.
+- attack(): Cria uma instância de FireballAttack e adiciona aos grupos de sprites de bolas de fogo e todos os sprites.
+- draw(screen): Desenha o inimigo na tela na posição atual.
+- draw_health_bar(screen): Desenha a barra de vida do inimigo na tela, ajustando o comprimento da barra de acordo com o percentual de vida atual.
+- take_damage(damage): Reduz a vida do inimigo com base no dano recebido. Se a vida for menor ou igual a zero, define a vida para zero.
+
+### Classe - Collectible:
+
+- __init__(x, y, item_type): Inicializa a instância de item colecionável, definindo o tipo de item, imagem, posição e tempo de vida.
+- update(): Verifica o tempo de vida do item colecionável e o remove se ele ultrapassar o tempo de vida definido.
+- draw(screen): Desenha o item colecionável na tela na posição atual.
+
+### Classe - FireballAttack:
+
+- __init__(x, y): Inicializa a instância do ataque de bola de fogo, definindo a imagem, posição e velocidade do projétil.
+- update(): Atualiza a posição do projétil, movendo-o da direita para a esquerda, e o remove se sair da tela.
+- draw(screen): Desenha o projétil na tela na posição atual.
 
 
 ## Imagens do jogo:
