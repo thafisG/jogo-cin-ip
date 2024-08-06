@@ -18,19 +18,26 @@ Equipe:
 
 ## Divisão de tarefas:
 
-
 |      Equipes      |     Atribuições     |
 | ------------------- | ------------------- |
-|  **tffg**| Tela Menu e Desing das telas e Assets|
-|  **epo**| Fase 1, integração dos Arquivos e Fases, Mecânica do Jogo e Desing dos personagens individuais |
-|  **bms4** e **tffg**| Documentação e Slide |
-| **assm** e **jsa3** | Fase 2|
-| **mbcf** | Fase do Trono |
+|  **tffg** e **jsa3**| Tela Menu e Desing das telas e Assets|
+|  **epo** e **assm** | Fase 1, integração dos Arquivos e Fases, Mecânica do Jogo e Desing dos personagens individuais |
+|  **bms4** e **tffg** e **mbcf**| Documentação e Slide |
 
 # História e Evolução
 
 Origens Literárias
 A história que inspirou o jogo tem suas raízes na série de livros "As Crônicas de Gelo e Fogo" de George R. R. Martin. O primeiro livro, "A Game of Thrones" (1996), introduziu os leitores ao mundo complexo e brutal de Westeros, onde diversas casas nobres lutam pelo poder. A trama é rica em intriga política, batalhas épicas e personagens multifacetados.
+
+**Historia do Jogo**
+
+O Trono de Ferro está vago, e o reino de Westeros está à beira do caos. As antigas alianças se desmoronam, e novos inimigos surgem de todos os lados. A escuridão se aproxima, e apenas os mais bravos e determinados podem reivindicar o trono e restaurar a ordem no reino.
+Em uma jornada épica e solitária, três heróis se destacam, cada um com uma missão pessoal que os leva por terras perigosas e desconhecidas. No caminho, eles devem enfrentar dragões poderosos, monstros antigos que guardam segredos e riquezas. Essas criaturas lendárias, uma vez símbolo de poder e majestade, agora se tornaram os maiores obstáculos para alcançar o trono.
+A cada batalha, os heróis se tornam mais fortes, mas também mais desafiados pelas escolhas que precisam fazer. As decisões tomadas ao longo da jornada moldarão o destino de Westeros. Será que os heróis conseguirão superar os desafios e reivindicar o Trono de Ferro? Ou a escuridão consumirá o reino para sempre?
+
+**Sua missão**
+
+Entre no mundo de Westeros e escolha seu herói. Enfrente dragões mortai e tome decisões cruciais. O destino do Trono de Ferro e de todo o reino está em suas mãos.
 
 ## Execução no pycharm 
 
