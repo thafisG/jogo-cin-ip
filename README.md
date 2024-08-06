@@ -93,9 +93,9 @@ Com base no conteúdo abordado durante o período da disciplina, o código foi a
 
 ## Organização do Código
 
-Funções e Classes importantes:
+## Funções e Classes importantes:
 
- ## Classe - Player():
+ ### Classe - Player():
 
  - update(): Atualiza a posição do jogador com base nas teclas pressionadas e verifica colisões.
  - attack(): Gerencia a animação de ataque e o dano aos inimigos.
