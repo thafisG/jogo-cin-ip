@@ -141,6 +141,6 @@ Com base no conteúdo abordado durante o período da disciplina, o código foi a
   <img src="imagens_do_jogo/tela_vitoria.png" alt="Tela Vitória" width="400" style="display: inline-block;" />
 </p>
 
-# Agradecimento Final:
+## Agradecimento Final:
 
 A equipe agradece ao professores, monitores e todos da UFPE (CIn-UFPE) que fizeram isso ser possivel. Gratidão por todo auxilio, feedback e acompanhamento. Obrigado!!
