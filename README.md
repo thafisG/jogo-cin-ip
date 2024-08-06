@@ -93,8 +93,6 @@ Com base no conteúdo abordado durante o período da disciplina, o código foi a
 
 ## Organização do Código
 
-## Organização do Código
-
 ## Funções e Classes importantes:
 
  ### Classe - Player():
