@@ -24,7 +24,8 @@ Equipe:
 |  **tffg**| Tela Menu e Desing das telas e Assets|
 |  **epo**| Fase 1, integração dos Arquivos e Fases, Mecânica do Jogo e Desing dos personagens individuais |
 |  **bms4** e **tffg**| Documentação e Slide |
-| **assm** e **jsa3** e **mbcf** | Fase 2|
+| **assm** e **jsa3** | Fase 2|
+| **mbcf** | Fase do Trono |
 
 # História e Evolução
 
