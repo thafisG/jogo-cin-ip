@@ -3,17 +3,17 @@
 
 Equipe:
 
-• Ana Sofia <assm>
+• Ana Sofia <**assm**>
 
-• Byanca Maria <bms4>
+• Byanca Maria <**bms4**>
 
-• Evando Pereira <epo>
+• Evando Pereira <**epo**>
 
-• Julyana dos Santos <jsa3>
+• Julyana dos Santos <**jsa3**>
 
-• Mariana Beatriz <mbcf>
+• Mariana Beatriz <**mbcf**>
 
-• Thais Fernanda <tffg>
+• Thais Fernanda <**tffg**>
 
 
 ## Divisão de tarefas:
@@ -41,7 +41,7 @@ Para executar o jogo, siga os passos abaixo:
 - Execute os arquivos individuais de cada personagem
 > obs.: Caso a imagem não seja compatível, lembre-se de modificar o local do arquivo da imagem no código.
 
-# Mecânicas de Jogo:
+## Mecânicas de Jogo:
 
 O jogo é um design 2D com câmera "Bird-Vision" (vista de cima) e estilo de gameplay de plataforma. O personagem pode se movimentar em todas as direções e realizar ataques que variam conforme o personagem escolhido:
 
@@ -60,7 +60,7 @@ Jogador      |     Teclas    |
 |  **Movimentação**| &#8592; , &#8593; , &#8594; , &#8595; |
 |  **Ataque** | K |
 
-# Colecionaveis
+## Colecionaveis
 
 |     Equipamento    |     Personagem     | Descrição |
 | ------------------- | ------------------- | ------------------- |
@@ -69,7 +69,7 @@ Jogador      |     Teclas    |
 |  Stannis Baratheon|True Shield |item colecionável disponível para o cruel Stannis Baratheon,o True Shield tem a poderosa habilidade de refletir os projéteis disparados pelos dragões, além de conceder a verdadeira defesa absoluta para que nada fique no caminho de Stannis Baratheon até o trono. |
 | PyroPoints | Todos|Após a derrota dos dragões, o seu massivo poder é condensado em uma esfera de fogo, o qual o jogador deve coletar para demonstrar como uma forma de troféu pela sua bravura. |
 
-# Bibliotecas e Ferramentas
+## Bibliotecas e Ferramentas
 
 |     Nome    |     Aplicação     | 
 | ------------------- | ------------------- | 
@@ -85,7 +85,6 @@ Jogador      |     Teclas    |
 - Mecânica de combate
 - Criação dos assets do projeto
 - Organização e Gestão de Tempo
-
 
 ## Estruturação do Código
 
