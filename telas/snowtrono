@@ -1,0 +1,81 @@
+import pygame
+import sys
+
+pygame.init()
+
+# Configuração 
+WIDTH, HEIGHT = 800, 600
+display = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("A guerra dos Tronos")
+
+# Fundo
+background_image = pygame.image.load('./gameip/saladotrono.jpg').convert()
+background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
+
+# Jogador
+class Toy:
+    def __init__(self):
+        self.imagem = pygame.image.load('./gameip/snow.png').convert_alpha()
+        self.rect = self.imagem.get_rect()
+        self.rect.center = (WIDTH // 6, HEIGHT // 7)
+        self.speed = 0.6
+
+    def desenhar(self, tela):
+        tela.blit(self.imagem, self.rect.topleft)
+
+    def mover(self, teclas):
+        if teclas[pygame.K_LEFT] and self.rect.left > 0:
+            self.rect.x -= self.speed
+        if teclas[pygame.K_RIGHT] and self.rect.right < WIDTH:
+            self.rect.x += self.speed
+        if teclas[pygame.K_UP] and self.rect.top > 0:
+            self.rect.y -= self.speed
+        if teclas[pygame.K_DOWN] and self.rect.bottom < HEIGHT:
+            self.rect.y += self.speed
+
+# Nova tela
+def nova_tela():
+    nova_tela = pygame.display.set_mode((WIDTH, HEIGHT))
+    nova_tela.fill((0, 0, 0)) 
+
+    pygame.display.set_caption("Nova Tela")
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+        pygame.display.update()
+
+# Instância
+bonequinho = Toy()
+
+#linha transparente
+linha_surface = pygame.Surface((5, HEIGHT - 80), pygame.SRCALPHA)
+linha_surface.fill((255, 100, 200, 20))  # RGBA - 128 é a transparência
+
+# GameLoop
+GameLoop = True
+if __name__ == "__main__":
+    while GameLoop:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                GameLoop = False
+
+        teclas = pygame.key.get_pressed()
+        bonequinho.mover(teclas)
+
+        display.blit(background_image, (0, 0))
+
+        #linha transparente e o bonequinho
+        linha_x = WIDTH - 150
+        display.blit(linha_surface, (linha_x, 80))
+        bonequinho.desenhar(display)
+
+        #colisão com a linha
+        linha_rect = pygame.Rect(linha_x, 80, 5, HEIGHT - 80)
+        if bonequinho.rect.colliderect(linha_rect):
+            nova_tela()
+
+        pygame.display.update()
+
+pygame.quit()
