@@ -12,25 +12,33 @@ pygame.display.set_caption("Fase 2 - Game of Thrones")
 
 WHITE = (255, 255, 255)
 BROWN = (139, 69, 19)
-RED = (255, 0, 0)
 BLACK = (0, 0, 0)
 
-background_image = pygame.image.load('assets/fase_2/norte_png.png').convert()
+background_image = pygame.image.load('D:/norte_png.png').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
 
 character_images = {
-    'Daenerys': pygame.image.load('assets/fase_1/draca.png').convert_alpha(),
-    'Jon': pygame.image.load('assets/fase_1/snow.png').convert_alpha(),
-    'Stannis': pygame.image.load('assets/fase_1/Stannis baratheon.png').convert_alpha()
+    'Daenerys': pygame.image.load('D:/draca.png').convert_alpha(),
+    'Jon': pygame.image.load('D:/snow.png').convert_alpha(),
+    'Stannis': pygame.image.load('D:/Stannis baratheon.png').convert_alpha()
 }
 
-enemy_image = pygame.image.load('assets/fase_2/kingslayer.png').convert_alpha()
+enemy_image = pygame.image.load('D:/kingslayer.png').convert_alpha()
+
+# Imagens da barra de vida do jogador
+life_bar_images = {
+    'full': pygame.image.load('D:/health_bar_full.png').convert_alpha(),
+    'medium': pygame.image.load('D:/health_bar_half.png').convert_alpha(),
+    'empty': pygame.image.load('D:/health_bar_low.png').convert_alpha()
+}
+
+# Imagem do projétil
+projectile_image = pygame.image.load('D:/ball_fire_attack.png').convert_alpha()
 
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, image, start_pos, target, speed):
         super().__init__()
-        self.image = pygame.Surface((10, 10))
-        self.image.fill(RED)
+        self.image = pygame.transform.scale(image, (20, 20))  # Ajuste o tamanho conforme necessário
         self.rect = self.image.get_rect(center=start_pos)
         self.target = target
         self.speed = speed
@@ -73,7 +81,7 @@ class Character(pygame.sprite.Sprite):
     def attack(self, target):
         current_time = pygame.time.get_ticks()
         if current_time - self.last_shot_time >= 500:
-            projectile = Projectile(self.image, self.rect.center, target, speed=4)
+            projectile = Projectile(projectile_image, self.rect.center, target, speed=4)
             all_sprites.add(projectile)
             projectiles.add(projectile)
             self.last_shot_time = current_time
@@ -102,7 +110,7 @@ class Enemy(pygame.sprite.Sprite):
             self.attack_cooldown -= 1
 
     def attack(self, target):
-        projectile = Projectile(self.image, self.rect.center, target, speed=6)
+        projectile = Projectile(projectile_image, self.rect.center, target, speed=6)
         all_sprites.add(projectile)
         projectiles.add(projectile)
 
@@ -136,21 +144,44 @@ def show_intro():
 
         pygame.display.flip()
 
-def show_end_screen(message):
-    end_font = pygame.font.Font(pygame.font.match_font('gabriola'), 40)
-    end_text = end_font.render(message, True, WHITE)
-    text_rect = end_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+def show_end_screen(image_path, duration=1000000):
+    end_image = pygame.image.load(image_path)
+    screen.blit(end_image, (0, 0))
+    pygame.display.flip()
 
+    start_time = pygame.time.get_ticks()
     while True:
-        screen.fill(BLACK)
-        screen.blit(end_text, text_rect)
-
         for event in pygame.event.get():
             if event.type == QUIT or event.type == KEYDOWN:
                 pygame.quit()
                 sys.exit()
 
+        current_time = pygame.time.get_ticks()
+        if current_time - start_time >= duration:
+            return
+
         pygame.display.flip()
+        pygame.time.wait(10)  # Pequena pausa para evitar uso excessivo da CPU
+
+def draw_health_bars(character):
+    # Barra de vida do jogador
+    if character.health > 2:
+        screen.blit(pygame.transform.scale(life_bar_images['full'], (80, 20)), (character.rect.x, character.rect.y - 30))
+    elif character.health == 2:
+        screen.blit(pygame.transform.scale(life_bar_images['medium'], (80, 20)), (character.rect.x, character.rect.y - 30))
+    else:
+        screen.blit(pygame.transform.scale(life_bar_images['empty'], (80, 20)), (character.rect.x, character.rect.y - 30))
+
+def draw_enemy_health_bar(enemy):
+    # Barra de vida do inimigo
+    health_bar_width = 150
+    health_bar_height = 20
+    bar_x = enemy.rect.x - health_bar_width // 2
+    bar_y = enemy.rect.y - 30
+    health_percentage = enemy.health / 15
+
+    pygame.draw.rect(screen, (255, 0, 0), (bar_x, bar_y, health_bar_width, health_bar_height))  # Barredira externa vermelha
+    pygame.draw.rect(screen, (0, 255, 0), (bar_x, bar_y, health_bar_width * health_percentage, health_bar_height))  # Barra interna verde
 
 def fase_2(character_choice):
     clock = pygame.time.Clock()
@@ -169,33 +200,29 @@ def fase_2(character_choice):
     all_sprites.add(enemy)
     enemies.add(enemy)
 
-    enemy_defeated = False
-
     running = True
     while running:
         for event in pygame.event.get():
-            if event.type == QUIT:
+            if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
         all_sprites.update()
 
-        if player.health <= 0:
-            show_end_screen("Você perdeu!")
-            running = False
-        elif enemy.health <= 0 and not enemy_defeated:
-            print("Inimigo derrotado!")
-            enemy.kill()
-            enemy_defeated = True
-            show_end_screen("Você venceu!")
-            running = False
-
         screen.blit(background_image, (0, 0))
         all_sprites.draw(screen)
+        draw_health_bars(player)  # Desenha a barra de vida do jogador
+        draw_enemy_health_bar(enemy)  # Desenha a barra de vida do inimigo
 
         pygame.display.flip()
-        clock.tick(FPS)
 
-    pygame.quit()
+        if player.health <= 0:
+            show_end_screen('tela_derrota.png')
+            running = False
+        if enemy.health <= 0:
+            show_end_screen('tela_vitoria.png', duration=7000)  # 7 segundos
+            running = False
+
+        clock.tick(FPS)
 
 fase_2('Daenerys')
