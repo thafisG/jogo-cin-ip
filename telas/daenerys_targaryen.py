@@ -315,8 +315,8 @@ def tela_vitoria(screen):
 
 player = Player()
 
-dragon1 = Enemy('D:/dragao.png', WIDTH - 100, HEIGHT // 2)
-dragon2 = Enemy('D:/dragao2.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
+dragon1 = Enemy('Downloads/dragao.png', WIDTH - 100, HEIGHT // 2)
+dragon2 = Enemy('Downloads/dragao2.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
 
 dragons = pygame.sprite.Group()
 dragons.add(dragon1, dragon2)
