@@ -8,7 +8,7 @@ pygame.init()
 # Configurar tela
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Jogo do Anão")
+pygame.display.set_caption("A Guerra dos Tronos")
 
 # Carregar imagem de fundo
 background_image = pygame.image.load('D:/mapa.jpg').convert()
