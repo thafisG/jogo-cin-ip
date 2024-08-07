@@ -11,16 +11,19 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Jogo do Anão")
 
 # Carregar imagem de fundo
-background_image = pygame.image.load('Downloads/mapa.jpg').convert()
+background_image = pygame.image.load('D:/mapa.jpg').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
 
 # Carregar imagem da tela de derrota
-tela_derrota_image = pygame.image.load('Downloads/tela_derrota.png').convert_alpha()
+tela_derrota_image = pygame.image.load('D:/tela_derrota.png').convert_alpha()
+
+# Carregar imagem da tela de vitória
+tela_vitoria_image = pygame.image.load('D:/tela_vitoria.png').convert_alpha()
 
 # Carregar imagens da barra de vida
-health_bar_full = pygame.image.load('Downloads/health_bar_full.png').convert_alpha()
-health_bar_half = pygame.image.load('Downloads/health_bar_half.png').convert_alpha()
-health_bar_low = pygame.image.load('Downloads/health_bar_low.png').convert_alpha()
+health_bar_full = pygame.image.load('D:/health_bar_full.png').convert_alpha()
+health_bar_half = pygame.image.load('D:/health_bar_half.png').convert_alpha()
+health_bar_low = pygame.image.load('D:/health_bar_low.png').convert_alpha()
 
 # Redimensionar as imagens da barra de vida para o tamanho adequado
 health_bar_full = pygame.transform.scale(health_bar_full, (60, 6))
@@ -40,7 +43,7 @@ class Weapon(pygame.sprite.Sprite):
         self.weapon_type = weapon_type
         self.damage = damage
         if weapon_type == "True Shield":
-            self.image = pygame.image.load('Downloads/true_shield.png').convert_alpha()
+            self.image = pygame.image.load('D:/true_shield.png').convert_alpha()
             self.image = pygame.transform.scale(self.image, (60, 60))  # Tamanho do escudo
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -50,8 +53,8 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.attack_images = [
-            pygame.image.load('Downloads/Stannis baratheon.png').convert_alpha(),
-            pygame.image.load('Downloads/Stannis baratheon.png').convert_alpha()
+            pygame.image.load('D:/Stannis baratheon.png').convert_alpha(),
+            pygame.image.load('D:/Stannis baratheon.png').convert_alpha()
         ]
         self.image = self.attack_images[0]
         self.rect = self.image.get_rect()
@@ -234,14 +237,12 @@ class Enemy(pygame.sprite.Sprite):
         bar_x = self.rect.centerx - bar_width // 2
         bar_y = self.rect.top - 20
         health_ratio = self.health / self.max_health
+        health_bar_width = int(bar_width * health_ratio)
 
-        # Usar a barra de vida padrão para o dragão
-        if health_ratio > 0.66:
-            pygame.draw.rect(screen, GREEN, (bar_x, bar_y, bar_width, bar_height))
-        elif health_ratio > 0.33:
-            pygame.draw.rect(screen, YELLOW, (bar_x, bar_y, bar_width, bar_height))
-        else:
-            pygame.draw.rect(screen, RED, (bar_x, bar_y, bar_width, bar_height))
+        # Desenhar a barra de vida do dragão
+        pygame.draw.rect(screen, RED, (bar_x, bar_y, bar_width, bar_height))  # Fundo vermelho
+        pygame.draw.rect(screen, GREEN, (bar_x, bar_y, health_bar_width, bar_height))  # Vida restante verde
+
 
     def take_damage(self, damage):
         self.health -= damage
@@ -257,10 +258,10 @@ class Collectible(pygame.sprite.Sprite):
         super().__init__()
         self.item_type = item_type
         if item_type == "Fire Ball":
-            self.image = pygame.image.load('Downloads/colecio.png').convert_alpha()
+            self.image = pygame.image.load('D:/colecio.png').convert_alpha()
             self.image = pygame.transform.scale(self.image, (30, 30))
         elif item_type == "True Shield":
-            self.image = pygame.image.load('Downloads/true_shield.png').convert_alpha()
+            self.image = pygame.image.load('D:/true_shield.png').convert_alpha()
             self.image = pygame.transform.scale(self.image, (60, 60))  # Tamanho do escudo
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -269,7 +270,7 @@ class Collectible(pygame.sprite.Sprite):
 class FireballAttack(pygame.sprite.Sprite):
     def __init__(self, x, y, direction, reflected=False):
         super().__init__()
-        self.image = pygame.image.load('Downloads/ball_fire_attack.png').convert_alpha()
+        self.image = pygame.image.load('D:/ball_fire_attack.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (30, 30))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -311,12 +312,28 @@ def tela_derrota(screen):
                     pygame.quit()
                     sys.exit()
 
+# Função para mostrar a tela de vitória
+def tela_vitoria(screen):
+    screen.blit(tela_vitoria_image, (0, 0))
+    pygame.display.flip()
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+
+
 # Criar jogador
 player = Player()
 
 # Criar inimigos
-dragon1 = Enemy('Downloads/dragao.png', WIDTH - 100, HEIGHT // 2)
-dragon2 = Enemy('Downloads/dragao.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
+dragon1 = Enemy('D:/dragao.png', WIDTH - 100, HEIGHT // 2)
+dragon2 = Enemy('D:/dragao.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
 
 # Lista dos dragões
 dragons = pygame.sprite.Group()
@@ -360,6 +377,13 @@ while running:
     # Verificar fim de jogo
     if player.health <= 0:
         tela_derrota(screen)
+        pygame.display.flip()
+        pygame.time.delay(2000)
+        running = False
+
+    # Verificar vitória
+    if player.inventory["Fire Ball"] >= 2 and player.inventory["True Shield"] >= 1:
+        tela_vitoria(screen)
         pygame.display.flip()
         pygame.time.delay(2000)
         running = False
