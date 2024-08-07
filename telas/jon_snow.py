@@ -11,15 +11,17 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Jogo do Ano")
 
 # Carregar imagem de fundo
-background_image = pygame.image.load('Downloads/mapa.jpg').convert()
+background_image = pygame.image.load('D:/mapa.jpg').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
-tela_derrota_image = pygame.image.load('Downloads/tela_derrota.png').convert_alpha()
+tela_derrota_image = pygame.image.load('D:/tela_derrota.png').convert_alpha()
+# Carregar imagem de tela de vitória
+tela_vitoria_image = pygame.image.load('D:/tela_vitoria.png').convert_alpha()
 
 # Carregar imagens das barras de vida
 life_bar_images = {
-    'full': pygame.image.load('Downloads/health_bar_full.png').convert_alpha(),
-    'medium': pygame.image.load('Downloads/health_bar_half.png').convert_alpha(),
-    'empty': pygame.image.load('Downloads/health_bar_low.png').convert_alpha()
+    'full': pygame.image.load('D:/health_bar_full.png').convert_alpha(),
+    'medium': pygame.image.load('D:/health_bar_half.png').convert_alpha(),
+    'empty': pygame.image.load('D:/health_bar_low.png').convert_alpha()
 }
 
 # Definir cores
@@ -35,7 +37,7 @@ class Weapon(pygame.sprite.Sprite):
         self.weapon_type = weapon_type
         self.damage = damage
         if weapon_type == "Sword":
-            self.image = pygame.image.load('Downloads/true_sword.png').convert_alpha()
+            self.image = pygame.image.load('D:/true_sword.png').convert_alpha()
             self.image = pygame.transform.scale(self.image, (60, 60))  # Tamanho da espada
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -45,8 +47,8 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.attack_images = [
-            pygame.image.load('Downloads/snow.png').convert_alpha(),
-            pygame.image.load('Downloads/snow.png').convert_alpha()
+            pygame.image.load('D:/snow.png').convert_alpha(),
+            pygame.image.load('D:/snow.png').convert_alpha()
         ]
         self.image = self.attack_images[0]
         self.rect = self.image.get_rect()
@@ -210,7 +212,7 @@ class Collectible(pygame.sprite.Sprite):
         self.item_type = item_type  # Atribuição do atributo item_type
         if item_type == "Fire Ball":
             try:
-                self.image = pygame.image.load('Downloads/colecio.png').convert_alpha()
+                self.image = pygame.image.load('D:/colecio.png').convert_alpha()
                 self.image = pygame.transform.scale(self.image, (30, 30))
             except pygame.error as e:
                 print(f"Erro ao carregar a imagem 'colecio.png': {e}")
@@ -218,7 +220,7 @@ class Collectible(pygame.sprite.Sprite):
                 self.image.fill(RED)
         elif item_type == "Sword":
             try:
-                self.image = pygame.image.load('Downloads/true_sword.png').convert_alpha()
+                self.image = pygame.image.load('D:/true_sword.png').convert_alpha()
                 self.image = pygame.transform.scale(self.image, (60, 60))
             except pygame.error as e:
                 print(f"Erro ao carregar a imagem 'true_sword.png': {e}")
@@ -242,7 +244,7 @@ class FireballAttack(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         try:
-            self.image = pygame.image.load('Downloads/ball_fire_attack.png').convert_alpha()
+            self.image = pygame.image.load('D:/ball_fire_attack.png').convert_alpha()
             self.image = pygame.transform.scale(self.image, (30, 30))
         except pygame.error as e:
             print(f"Erro ao carregar a imagem 'ball_fire_attack.png': {e}")
@@ -270,9 +272,18 @@ def create_collectible(x, y, item_type):
 def game_over_screen():
     screen.blit(tela_derrota_image, (0, 0))
     pygame.display.flip()
-    pygame.time.wait(2000)  # Exibir tela de Game Over por 2 segundos
+    pygame.time.wait(5000)  # Exibir tela de Game Over por 2 segundos
     pygame.quit()
     sys.exit()
+
+# Função para exibir a tela de vitória
+def victory_screen():
+    screen.blit(tela_vitoria_image, (0, 0))
+    pygame.display.flip()
+    pygame.time.wait(5000)  # Exibir tela de vitória por 2 segundos
+    pygame.quit()
+    sys.exit()
+
 
 # Grupos de sprites
 all_sprites = pygame.sprite.Group()
@@ -292,10 +303,11 @@ all_sprites.add(initial_sword)
 
 # Criar inimigos (agora 2 dragões)
 for i in range(2):
-    enemy = Enemy('Downloads/dragao.png', random.randint(600, 800), random.randint(50, HEIGHT - 50))
+    enemy = Enemy('D:/dragao.png', random.randint(600, 800), random.randint(50, HEIGHT - 50))
     all_sprites.add(enemy)
     dragons.add(enemy)
 
+# Main loop
 # Main loop
 clock = pygame.time.Clock()
 while True:
@@ -326,6 +338,10 @@ while True:
     # Verificar se o jogador morreu
     if player.check_death():
         game_over_screen()
+
+    # Verificar se todos os dragões foram derrotados
+    if len(dragons) == 0:
+        victory_screen()
 
     # Desenhar fundo e sprites
     screen.blit(background_image, (0, 0))
