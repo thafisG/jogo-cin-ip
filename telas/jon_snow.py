@@ -303,7 +303,7 @@ all_sprites.add(initial_sword)
 
 # Criar inimigos (agora 2 dragões)
 for i in range(2):
-    enemy = Enemy('D:/dragao.png', random.randint(600, 800), random.randint(50, HEIGHT - 50))
+    enemy = Enemy('Downloads/dragao.png', random.randint(600, 800), random.randint(50, HEIGHT - 50))
     all_sprites.add(enemy)
     dragons.add(enemy)
 
