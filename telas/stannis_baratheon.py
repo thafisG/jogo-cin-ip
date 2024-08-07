@@ -11,19 +11,19 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("A Guerra dos Tronos")
 
 # Carregar imagem de fundo
-background_image = pygame.image.load('D:/mapa.jpg').convert()
+background_image = pygame.image.load('Downloads/mapa.jpg').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
 
 # Carregar imagem da tela de derrota
-tela_derrota_image = pygame.image.load('D:/tela_derrota.png').convert_alpha()
+tela_derrota_image = pygame.image.load('Downloads/tela_derrota.png').convert_alpha()
 
 # Carregar imagem da tela de vitória
-tela_vitoria_image = pygame.image.load('D:/tela_vitoria.png').convert_alpha()
+tela_vitoria_image = pygame.image.load('Downloads/tela_vitoria.png').convert_alpha()
 
 # Carregar imagens da barra de vida
-health_bar_full = pygame.image.load('D:/health_bar_full.png').convert_alpha()
-health_bar_half = pygame.image.load('D:/health_bar_half.png').convert_alpha()
-health_bar_low = pygame.image.load('D:/health_bar_low.png').convert_alpha()
+health_bar_full = pygame.image.load('Downloads/health_bar_full.png').convert_alpha()
+health_bar_half = pygame.image.load('Downloads/health_bar_half.png').convert_alpha()
+health_bar_low = pygame.image.load('Downloads/health_bar_low.png').convert_alpha()
 
 # Redimensionar as imagens da barra de vida para o tamanho adequado
 health_bar_full = pygame.transform.scale(health_bar_full, (60, 6))
@@ -43,7 +43,7 @@ class Weapon(pygame.sprite.Sprite):
         self.weapon_type = weapon_type
         self.damage = damage
         if weapon_type == "True Shield":
-            self.image = pygame.image.load('D:/true_shield.png').convert_alpha()
+            self.image = pygame.image.load('Downloads/true_shield.png').convert_alpha()
             self.image = pygame.transform.scale(self.image, (60, 60))  # Tamanho do escudo
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -53,8 +53,8 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.attack_images = [
-            pygame.image.load('D:/Stannis baratheon.png').convert_alpha(),
-            pygame.image.load('D:/Stannis baratheon.png').convert_alpha()
+            pygame.image.load('Downloads/Stannis baratheon.png').convert_alpha(),
+            pygame.image.load('Downloads/Stannis baratheon.png').convert_alpha()
         ]
         self.image = self.attack_images[0]
         self.rect = self.image.get_rect()
@@ -258,10 +258,10 @@ class Collectible(pygame.sprite.Sprite):
         super().__init__()
         self.item_type = item_type
         if item_type == "Fire Ball":
-            self.image = pygame.image.load('D:/colecio.png').convert_alpha()
+            self.image = pygame.image.load('Downloads/colecio.png').convert_alpha()
             self.image = pygame.transform.scale(self.image, (30, 30))
         elif item_type == "True Shield":
-            self.image = pygame.image.load('D:/true_shield.png').convert_alpha()
+            self.image = pygame.image.load('Downloads/true_shield.png').convert_alpha()
             self.image = pygame.transform.scale(self.image, (60, 60))  # Tamanho do escudo
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -270,7 +270,7 @@ class Collectible(pygame.sprite.Sprite):
 class FireballAttack(pygame.sprite.Sprite):
     def __init__(self, x, y, direction, reflected=False):
         super().__init__()
-        self.image = pygame.image.load('D:/ball_fire_attack.png').convert_alpha()
+        self.image = pygame.image.load('Downloads/ball_fire_attack.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (30, 30))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -332,8 +332,8 @@ def tela_vitoria(screen):
 player = Player()
 
 # Criar inimigos
-dragon1 = Enemy('D:/dragao.png', WIDTH - 100, HEIGHT // 2)
-dragon2 = Enemy('D:/dragao.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
+dragon1 = Enemy('Downloads/dragao.png', WIDTH - 100, HEIGHT // 2)
+dragon2 = Enemy('Downloads/dragao.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
 
 # Lista dos dragões
 dragons = pygame.sprite.Group()
