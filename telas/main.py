@@ -16,11 +16,11 @@ tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
 pygame.display.set_caption("Menu - A Guerra dos Tronos")
 
 # Carregar imagens de fundo
-fundo_menu = pygame.image.load("Downloads/tela_menu_figma.png").convert()
+fundo_menu = pygame.image.load("D:/Users/tffg/Downloads/jogo-cin-ip-main/jogo-cin-ip-main/assets/tela_menu/tela_menu_figma.png").convert()
 fundo_menu = pygame.transform.scale(fundo_menu, (LARGURA_TELA, ALTURA_TELA))
-fundo_menu_in = pygame.image.load("Downloads/escolhas_de_personagens.png").convert()
+fundo_menu_in = pygame.image.load("D:/Users/tffg/Downloads/jogo-cin-ip-main/jogo-cin-ip-main/assets/tela_menu/escolhas_de_personagens.png").convert()
 fundo_menu_in = pygame.transform.scale(fundo_menu_in, (LARGURA_TELA, ALTURA_TELA))
-tela_historia = pygame.image.load("Downloads/tela_ifmenu.png").convert()
+tela_historia = pygame.image.load("D:/Users/tffg/Downloads/jogo-cin-ip-main/jogo-cin-ip-main/assets/tela_menu/tela_ifmenu.png").convert()
 tela_historia = pygame.transform.scale(tela_historia, (LARGURA_TELA, ALTURA_TELA))
 
 # Função para iniciar o jogo
