@@ -1,7 +1,7 @@
 import pygame
 import sys
 import random
-
+import subprocess
 # Inicializar o Pygame
 pygame.init()
 
@@ -11,9 +11,9 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Jogo do Ano")
 
 # Carregar imagem de fundo
-background_image = pygame.image.load('Downloads/mapa.jpg').convert()
+background_image = pygame.image.load('D:/mapa.jpg').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
-tela_derrota_image = pygame.image.load('Downloads/tela_derrota.png').convert_alpha()
+tela_derrota_image = pygame.image.load('D:/tela_derrota.png').convert_alpha()
 # Definir cores
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
@@ -22,9 +22,9 @@ BLUE = (0, 0, 255)
 
 # Carregar imagens da barra de vida
 life_bar_images = {
-    'full': pygame.image.load('Downloads/health_bar_full.png').convert_alpha(),
-    'medium': pygame.image.load('Downloads/health_bar_half.png').convert_alpha(),
-    'empty': pygame.image.load('Downloads/health_bar_low.png').convert_alpha()
+    'full': pygame.image.load('D:/health_bar_full.png').convert_alpha(),
+    'medium': pygame.image.load('D:/health_bar_half.png').convert_alpha(),
+    'empty': pygame.image.load('D:/health_bar_low.png').convert_alpha()
 }
 
 # Redimensionar imagens da barra de vida
@@ -36,8 +36,8 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.attack_images = [
-            pygame.image.load('Downloads/draca.png').convert_alpha(),
-            pygame.image.load('Downloads/draca.png').convert_alpha()
+            pygame.image.load('D:/draca.png').convert_alpha(),
+            pygame.image.load('D:/draca.png').convert_alpha()
         ]
         self.image = self.attack_images[0]
         self.rect = self.image.get_rect()
@@ -224,7 +224,7 @@ class Collectible(pygame.sprite.Sprite):
         self.item_type = item_type
         if item_type == "Fire Ball":
             try:
-                self.image = pygame.image.load('Downloads/colecio.png').convert_alpha()
+                self.image = pygame.image.load('D:/colecio.png').convert_alpha()
                 self.image = pygame.transform.scale(self.image, (30, 30))
             except pygame.error as e:
                 print(f"Erro ao carregar a imagem 'fireball.png': {e}")
@@ -232,7 +232,7 @@ class Collectible(pygame.sprite.Sprite):
                 self.image.fill(RED)
         elif item_type == "Ovo":
             try:
-                self.image = pygame.image.load('Downloads/ovo.png').convert_alpha()
+                self.image = pygame.image.load('D:/ovo.png').convert_alpha()
                 self.image = pygame.transform.scale(self.image, (30, 30))
             except pygame.error as e:
                 print(f"Erro ao carregar a imagem 'ovo.png': {e}")
@@ -256,7 +256,7 @@ class FireballAttack(pygame.sprite.Sprite):
         super().__init__()
         self.source = source
         try:
-            self.image = pygame.image.load('Downloads/ball_fire_attack.png').convert_alpha()
+            self.image = pygame.image.load('D:/ball_fire_attack.png').convert_alpha()
             self.image = pygame.transform.scale(self.image, (30, 30))
         except pygame.error as e:
             print(f"Erro ao carregar a imagem 'fireball.png': {e}")
@@ -296,10 +296,21 @@ def tela_derrota(screen):
                     pygame.quit()
                     sys.exit()
 
+def iniciar_fase_2(daenerys):
+    subprocess.Popen(['python', 'D:/fase2.py', daenerys])
+
+def finalizar_fase_1():
+    # Verificar se o jogador tem mais de 1 item "Fire Ball" ou "Ovo"
+    if player.inventory["Fire Ball"] > 1 or player.inventory["Ovo"] > 1:
+        iniciar_fase_2("daenerys")
+    else:
+        print("Não é possível avançar para a fase 2. Coleta mais itens.")
+
+
 player = Player()
 
-dragon1 = Enemy('Downloads/dragao.png', WIDTH - 100, HEIGHT // 2)
-dragon2 = Enemy('Downloads/dragao2.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
+dragon1 = Enemy('D:/dragao.png', WIDTH - 100, HEIGHT // 2)
+dragon2 = Enemy('D:/dragao2.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
 
 dragons = pygame.sprite.Group()
 dragons.add(dragon1, dragon2)
@@ -328,6 +339,10 @@ while running:
         if isinstance(item, Collectible):
             if item.item_type == "Fire Ball":
                 player.inventory["Fire Ball"] += 1
+                # Verificar se o número de "Fire Ball" coletadas é suficiente para avançar
+                if player.inventory["Fire Ball"] > 1 or player.inventory["Ovo"] > 1:
+                    finalizar_fase_1()  # Finaliza a fase e inicia a fase 2
+                    running = False  # Para sair do loop atual e iniciar a nova fase
             elif item.item_type == "Ovo":
                 player.inventory["Ovo"] += 1
                 player.enable_double_shoot()  # Habilita o disparo duplo após pegar o item "Ovo"
