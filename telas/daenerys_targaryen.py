@@ -11,10 +11,10 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("A Guerra dos Tronos")
 
 # Carregar imagem de fundo
-background_image = pygame.image.load('Downloads/mapa.jpg').convert()
+background_image = pygame.image.load('D:/Users/tffg/Downloads/jogo-cin-ip-main/jogo-cin-ip-main/assets/fase_1/mapa.jpg').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
-tela_derrota_image = pygame.image.load('Downloads/tela_derrota.png').convert_alpha()
-tela_vitoria_image = pygame.image.load('Downloads/tela_vitoria.png').convert_alpha()
+tela_derrota_image = pygame.image.load('D:/Users/tffg/Downloads/jogo-cin-ip-main/jogo-cin-ip-main/assets/resultados/tela_derrota.png').convert_alpha()
+tela_vitoria_image = pygame.image.load('D:/Users/tffg/Downloads/jogo-cin-ip-main/jogo-cin-ip-main/assets/resultados/tela_vitoria.png').convert_alpha()
 # Definir cores
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
@@ -23,9 +23,9 @@ BLUE = (0, 0, 255)
 
 # Carregar imagens da barra de vida
 life_bar_images = {
-    'full': pygame.image.load('Downloads/health_bar_full.png').convert_alpha(),
-    'medium': pygame.image.load('Downloads/health_bar_half.png').convert_alpha(),
-    'empty': pygame.image.load('Downloads/health_bar_low.png').convert_alpha()
+    'full': pygame.image.load('D:/Users/tffg/Downloads/jogo-cin-ip-main/jogo-cin-ip-main/assets/fase_1/health_bar_full.png').convert_alpha(),
+    'medium': pygame.image.load('D:/Users/tffg/Downloads/jogo-cin-ip-main/jogo-cin-ip-main/assets/fase_1/health_bar_half.png').convert_alpha(),
+    'empty': pygame.image.load('D:/Users/tffg/Downloads/jogo-cin-ip-main/jogo-cin-ip-main/assets/fase_1/health_bar_low.png').convert_alpha()
 }
 
 # Redimensionar imagens da barra de vida
@@ -37,8 +37,8 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.attack_images = [
-            pygame.image.load('Downloads/draca.png').convert_alpha(),
-            pygame.image.load('Downloads/draca.png').convert_alpha()
+            pygame.image.load('D:/Users/tffg/Downloads/jogo-cin-ip-main/jogo-cin-ip-main/assets/fase_1/draca.png').convert_alpha(),
+            pygame.image.load('D:/Users/tffg/Downloads/jogo-cin-ip-main/jogo-cin-ip-main/assets/fase_1/draca.png').convert_alpha()
         ]
         self.image = self.attack_images[0]
         self.rect = self.image.get_rect()
@@ -225,7 +225,7 @@ class Collectible(pygame.sprite.Sprite):
         self.item_type = item_type
         if item_type == "Fire Ball":
             try:
-                self.image = pygame.image.load('Downloads/colecio.png').convert_alpha()
+                self.image = pygame.image.load('D:/Users/tffg/Downloads/jogo-cin-ip-main/jogo-cin-ip-main/assets/fase_1/colecio.png').convert_alpha()
                 self.image = pygame.transform.scale(self.image, (30, 30))
             except pygame.error as e:
                 print(f"Erro ao carregar a imagem 'fireball.png': {e}")
@@ -233,7 +233,7 @@ class Collectible(pygame.sprite.Sprite):
                 self.image.fill(RED)
         elif item_type == "Ovo":
             try:
-                self.image = pygame.image.load('Downloads/ovo.png').convert_alpha()
+                self.image = pygame.image.load('D:/Users/tffg/Downloads/jogo-cin-ip-main/jogo-cin-ip-main/assets/fase_1/ovo.png').convert_alpha()
                 self.image = pygame.transform.scale(self.image, (30, 30))
             except pygame.error as e:
                 print(f"Erro ao carregar a imagem 'ovo.png': {e}")
@@ -257,7 +257,7 @@ class FireballAttack(pygame.sprite.Sprite):
         super().__init__()
         self.source = source
         try:
-            self.image = pygame.image.load('Downloads/ball_fire_attack.png').convert_alpha()
+            self.image = pygame.image.load('D:/Users/tffg/Downloads/jogo-cin-ip-main/jogo-cin-ip-main/assets/fase_1/ball_fire_attack.png').convert_alpha()
             self.image = pygame.transform.scale(self.image, (30, 30))
         except pygame.error as e:
             print(f"Erro ao carregar a imagem 'fireball.png': {e}")
@@ -315,8 +315,8 @@ def tela_vitoria(screen):
 
 player = Player()
 
-dragon1 = Enemy('Downloads/dragao.png', WIDTH - 100, HEIGHT // 2)
-dragon2 = Enemy('Downloads/dragao2.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
+dragon1 = Enemy('D:/Users/tffg/Downloads/jogo-cin-ip-main/jogo-cin-ip-main/assets/fase_1/dragao.png', WIDTH - 100, HEIGHT // 2)
+dragon2 = Enemy('D:/Users/tffg/Downloads/jogo-cin-ip-main/jogo-cin-ip-main/assets/fase_1/dragao2.png', WIDTH - 100, random.randint(50, HEIGHT - 50))
 
 dragons = pygame.sprite.Group()
 dragons.add(dragon1, dragon2)
