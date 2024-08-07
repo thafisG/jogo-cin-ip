@@ -1,7 +1,7 @@
 import pygame
 import sys
 import random
-import subprocess
+
 # Inicializar o Pygame
 pygame.init()
 
@@ -14,6 +14,7 @@ pygame.display.set_caption("Jogo do Ano")
 background_image = pygame.image.load('D:/mapa.jpg').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
 tela_derrota_image = pygame.image.load('D:/tela_derrota.png').convert_alpha()
+tela_vitoria_image = pygame.image.load('D:/tela_vitoria.png').convert_alpha()
 # Definir cores
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
@@ -296,16 +297,21 @@ def tela_derrota(screen):
                     pygame.quit()
                     sys.exit()
 
-def iniciar_fase_2(daenerys):
-    subprocess.Popen(['python', 'D:/fase2.py', daenerys])
-
-def finalizar_fase_1():
-    # Verificar se o jogador tem mais de 1 item "Fire Ball" ou "Ovo"
-    if player.inventory["Fire Ball"] > 1 or player.inventory["Ovo"] > 1:
-        iniciar_fase_2("daenerys")
-    else:
-        print("Não é possível avançar para a fase 2. Coleta mais itens.")
-
+def tela_vitoria(screen):
+    screen.blit(tela_vitoria_image, (0, 0))
+    pygame.display.flip()
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+                elif event.key == pygame.K_RETURN:  # Pressione Enter para sair da tela de vitória
+                    waiting = False
 
 player = Player()
 
@@ -325,6 +331,8 @@ fireballs = pygame.sprite.Group()
 
 # Criar item "Ovo" no início do jogo
 create_collectible(WIDTH // 2, HEIGHT // 2, "Ovo")
+# Adicione uma variável para controlar se a tela de vitória foi exibida
+victory_screen_shown = False
 
 running = True
 while running:
@@ -339,14 +347,16 @@ while running:
         if isinstance(item, Collectible):
             if item.item_type == "Fire Ball":
                 player.inventory["Fire Ball"] += 1
-                # Verificar se o número de "Fire Ball" coletadas é suficiente para avançar
-                if player.inventory["Fire Ball"] > 1 or player.inventory["Ovo"] > 1:
-                    finalizar_fase_1()  # Finaliza a fase e inicia a fase 2
-                    running = False  # Para sair do loop atual e iniciar a nova fase
             elif item.item_type == "Ovo":
                 player.inventory["Ovo"] += 1
                 player.enable_double_shoot()  # Habilita o disparo duplo após pegar o item "Ovo"
                 player.increase_fireball_speed()  # Aumenta a velocidade do disparo
+
+    # Verificar a condição de vitória após a coleta de itens
+    if not victory_screen_shown and (player.inventory["Fire Ball"] >= 2 or player.inventory["Ovo"] > 1):
+        tela_vitoria(screen)
+        victory_screen_shown = True  # Evita que a tela de vitória seja exibida repetidamente
+        running = False  # Finaliza o loop para mostrar a tela de vitória
 
     for fireball in fireballs.copy():
         if fireball.source == "player":
