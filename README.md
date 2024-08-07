@@ -20,9 +20,11 @@ Equipe:
 
 |      Equipes      |     Atribuições     |
 | ------------------- | ------------------- |
-|  **tffg** e **jsa3**| Tela Menu e Desing das telas e Assets|
-|  **epo** e **assm** | Fase 1, integração dos Arquivos e Fases, Mecânica do Jogo e Desing dos personagens individuais |
-|  **bms4** e **tffg** e **mbcf**| Documentação e Slide |
+|  **tffg** | Tela Menu e Desing das telas e Assets|
+|**assm** e **mbcf** | Mecânica do jogo|
+|**jsa3** e  **bms4** |Movimentação dos personagens|
+|  **epo** | Fase 1, integração dos Arquivos e Fases, Mecânica do Jogo e Desing dos personagens individuais |
+| **tffg**  e **mbcf** | Documentação e Slide |
 
 # História e Evolução
 
